@@ -40,6 +40,15 @@
 - TC 消融预测 CSV；
 - TC 校准系数 JSON；
 - `docs/TC_CALIBRATION_ABLATION.md` 副本。
+- 动态 demo 只读输入清单：`competition_artifacts/05_report_assets/demo_input_manifest.json` 与 `demo_input_manifest.md`。
+
+新增校验入口：
+
+```powershell
+& 'D:\anaconda\envs\jiebang\python.exe' scripts/check_demo_inputs.py
+```
+
+该脚本只检查证据包中的结果文件、字段、行数、TC 消融边界和关键图件存在性，不训练模型，也不重新拟合 TC。
 
 最近一次验证结果：
 
@@ -94,6 +103,8 @@ Metrics rows: 81; TC ablation rows: 8; missing: 0
 | 预测轨迹图 | `competition_artifacts/04_figures/figure_3_representative_predictions.png` |
 | PHM 看板图 | `competition_artifacts/04_figures/figure_6_phm_application_dashboard.png` |
 | 机理-遥测图 | `competition_artifacts/04_figures/figure_5_mechanism_observable_map.png` |
+| demo 输入契约 | `competition_artifacts/05_report_assets/demo_input_manifest.json` |
+| demo 输入说明 | `competition_artifacts/05_report_assets/demo_input_manifest.md` |
 
 ## 4. Demo 推荐页面结构
 

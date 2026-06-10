@@ -167,6 +167,7 @@ competition_artifacts/
 - 严格无监督对比、监督参考、消融、TC 校准消融和参数敏感性表；
 - PNG/SVG/PDF 图件；
 - 报告素材文档；
+- 动态 demo 只读输入清单与校验契约；
 - 清理和检查点保留说明；
 - 各子目录中文 `README.md`。
 
@@ -191,6 +192,12 @@ competition_artifacts/
 
 ```powershell
 & 'D:\anaconda\envs\jiebang\python.exe' -m py_compile scripts/prepare_competition_artifacts.py
+```
+
+检查后续动态 demo 可读取的静态输入是否完整：
+
+```powershell
+& 'D:\anaconda\envs\jiebang\python.exe' scripts/check_demo_inputs.py
 ```
 
 ## Docker 说明

@@ -2613,6 +2613,7 @@ def write_artifact_readme() -> None:
         "- 最终预测诊断图展示 `PG-STDA-SAC-RSPA-TC` 的验证集校准后输出；TC 只使用目标域验证集，不使用测试集标签。",
         "- `figure_4_aerospace_workflow_summary.png`、`figure_5_mechanism_observable_map.png`、`figure_6_phm_application_dashboard.png` 用于加分项中的工程流程和可视化展示。",
         "- `04_figures` 下每张主图均同时保留 PNG、SVG、PDF，便于报告排版和后续编辑。",
+        "- `05_report_assets/demo_input_manifest.json` 与 `demo_input_manifest.md` 锁定后续 dashboard/demo 的只读输入契约。",
     ]
     (ARTIFACTS / "README.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -2649,6 +2650,164 @@ def write_dataset_inventory() -> None:
         size = dir_size_mb(path) if path.is_dir() else (path.stat().st_size / (1024 * 1024) if path.exists() else 0.0)
         lines.append(f"| {role} | `{rel}` | {size:.2f} | {purpose} | {'是' if path.exists() else '否'} |")
     (ARTIFACTS / "01_datasets/dataset_inventory.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def build_demo_input_manifest() -> dict[str, Any]:
+    prediction_columns = ["unit_id", "time_index", "stage", "y_true", "y_pred"]
+    metric_keys = [
+        "rmse",
+        "mae",
+        "nasa_score",
+        "ra",
+        "alpha_lambda_0.5",
+        "alpha_lambda_0.8",
+        "last_window_rmse",
+        "last_5_avg_rmse",
+    ]
+    return {
+        "name": "XA-202608 pre-demo input manifest",
+        "generated_by": "scripts/prepare_competition_artifacts.py",
+        "purpose": "Static input contract for a later dashboard/demo. The demo should read these artifacts only and should not train models.",
+        "boundary": {
+            "strict_raw_comparison": "Use 03_results/strict_unsupervised_comparison.md for fair raw transfer comparison without TC.",
+            "final_pipeline": "Use final_outputs predictions and metrics for PG-STDA-SAC-RSPA-TC visualization.",
+            "tc_calibration": "TC is validation-only output calibration; do not use target test labels for calibration.",
+            "ai_images": "AI-generated images under 04_figures/image2_generated are conceptual schematics, not experimental evidence.",
+        },
+        "prediction_csvs": {
+            "first_transfer_test": {
+                "path": "competition_artifacts/02_experiments/final_outputs/first_transfer/predictions_test.csv",
+                "role": "final TC test predictions for reaction wheel dashboard panels",
+                "required_columns": prediction_columns,
+                "min_rows": 1,
+            },
+            "first_transfer_val": {
+                "path": "competition_artifacts/02_experiments/final_outputs/first_transfer/predictions_val.csv",
+                "role": "validation predictions used by TC calibration",
+                "required_columns": prediction_columns,
+                "min_rows": 1,
+            },
+            "second_transfer_test": {
+                "path": "competition_artifacts/02_experiments/final_outputs/second_transfer/predictions_test.csv",
+                "role": "final TC test predictions for satellite battery dashboard panels",
+                "required_columns": prediction_columns,
+                "min_rows": 1,
+            },
+            "second_transfer_val": {
+                "path": "competition_artifacts/02_experiments/final_outputs/second_transfer/predictions_val.csv",
+                "role": "validation predictions used by TC calibration",
+                "required_columns": prediction_columns,
+                "min_rows": 1,
+            },
+        },
+        "metrics_jsons": {
+            "first_transfer_metrics": {
+                "path": "competition_artifacts/02_experiments/final_outputs/first_transfer/transfer_metrics.json",
+                "role": "final first-transfer metrics",
+                "required_metrics": metric_keys,
+            },
+            "second_transfer_metrics": {
+                "path": "competition_artifacts/02_experiments/final_outputs/second_transfer/transfer_metrics.json",
+                "role": "final second-transfer metrics",
+                "required_metrics": metric_keys,
+            },
+        },
+        "table_csvs": {
+            "metrics_master": {
+                "path": "competition_artifacts/03_results/metrics_master.csv",
+                "role": "all collected experiment metrics",
+                "required_columns": ["task", "group", "method", *metric_keys],
+                "min_rows": 1,
+            },
+            "tc_ablation_summary": {
+                "path": "competition_artifacts/03_results/tc_ablation/tc_ablation_summary.csv",
+                "role": "TC boundary and time-prior ablation",
+                "required_columns": [
+                    "task",
+                    "variant",
+                    "feature_mode",
+                    "uses_target_val_labels",
+                    "uses_test_labels_for_fit",
+                    *metric_keys,
+                ],
+                "min_rows": 8,
+            },
+        },
+        "required_files": {
+            "strict_raw_comparison": {
+                "path": "competition_artifacts/03_results/strict_unsupervised_comparison.md",
+                "role": "main fair raw transfer comparison",
+                "min_bytes": 100,
+            },
+            "tc_ablation_markdown": {
+                "path": "competition_artifacts/03_results/tc_ablation/tc_ablation_summary.md",
+                "role": "human-readable TC ablation interpretation",
+                "min_bytes": 100,
+            },
+            "final_recommendation": {
+                "path": "competition_artifacts/03_results/final_recommendation.md",
+                "role": "final method and reporting boundary",
+                "min_bytes": 100,
+            },
+            "mechanism_observable_figure": {
+                "path": "competition_artifacts/04_figures/figure_5_mechanism_observable_map.png",
+                "role": "mechanism-observable explanatory figure",
+                "min_bytes": 1000,
+            },
+            "phm_dashboard_figure": {
+                "path": "competition_artifacts/04_figures/figure_6_phm_application_dashboard.png",
+                "role": "static PHM dashboard figure",
+                "min_bytes": 1000,
+            },
+            "representative_prediction_figure": {
+                "path": "competition_artifacts/04_figures/figure_3_representative_predictions.png",
+                "role": "representative final prediction trajectories",
+                "min_bytes": 1000,
+            },
+        },
+    }
+
+
+def write_demo_input_manifest() -> None:
+    manifest = build_demo_input_manifest()
+    save_json(manifest, ARTIFACTS / "05_report_assets/demo_input_manifest.json")
+    lines = [
+        "# 动态 Demo 输入清单",
+        "",
+        "本文件锁定后续动态 demo 或静态 dashboard 可以读取的结果文件。Demo 应只读这些文件，不现场训练模型，不重新拟合 TC，不使用测试标签做任何校准。",
+        "",
+        "校验入口：",
+        "",
+        "```powershell",
+        "& 'D:\\anaconda\\envs\\jiebang\\python.exe' scripts/check_demo_inputs.py",
+        "```",
+        "",
+        "## 预测输入",
+        "",
+        "| 名称 | 路径 | 用途 |",
+        "|---|---|---|",
+    ]
+    for name, spec in manifest["prediction_csvs"].items():
+        lines.append(f"| `{name}` | `{spec['path']}` | {spec['role']} |")
+    lines.extend(["", "## 指标与表格", "", "| 名称 | 路径 | 用途 |", "|---|---|---|"])
+    for group in ("metrics_jsons", "table_csvs"):
+        for name, spec in manifest[group].items():
+            lines.append(f"| `{name}` | `{spec['path']}` | {spec['role']} |")
+    lines.extend(["", "## 图件与解释文件", "", "| 名称 | 路径 | 用途 |", "|---|---|---|"])
+    for name, spec in manifest["required_files"].items():
+        lines.append(f"| `{name}` | `{spec['path']}` | {spec['role']} |")
+    lines.extend(
+        [
+            "",
+            "## 边界",
+            "",
+            "- `strict_raw_comparison` 用于公平 raw 迁移对比，不含最终 TC。",
+            "- `final_outputs` 用于 `PG-STDA-SAC-RSPA-TC` 最终工程管线展示。",
+            "- `tc_ablation_summary` 用于说明 TC 与时间先验边界，不能隐藏第二迁移 `time-only TC` 很强这一事实。",
+            "- AI 生成概念图只能作为 conceptual schematic，不能替代代码生成的实验图和指标。",
+        ]
+    )
+    (ARTIFACTS / "05_report_assets/demo_input_manifest.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def write_final_recommendation(final_rows: list[dict[str, Any]]) -> None:
@@ -2812,6 +2971,8 @@ def write_subfolder_readmes() -> None:
             "本目录保存报告撰写所需的设计、审阅和实验总结材料。",
             "",
             "- `source_docs/`：从项目 `docs/` 复制来的关键文档。",
+            "- `demo_input_manifest.json`：后续动态 demo 的机器可读只读输入契约。",
+            "- `demo_input_manifest.md`：后续动态 demo 的人工可读输入清单。",
             "- 这些文档用于支撑数据集设计、方法创新性、实验边界和最终结果解释。",
         ],
         "05_report_assets/source_docs/README.md": [
@@ -2871,6 +3032,7 @@ def main() -> None:
     write_artifact_readme()
     write_requirement_matrix()
     write_dataset_inventory()
+    write_demo_input_manifest()
     write_cleanup_manifest()
     write_subfolder_readmes()
 

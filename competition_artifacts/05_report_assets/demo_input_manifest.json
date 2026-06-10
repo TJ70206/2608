@@ -1,0 +1,163 @@
+{
+  "name": "XA-202608 pre-demo input manifest",
+  "generated_by": "scripts/prepare_competition_artifacts.py",
+  "purpose": "Static input contract for a later dashboard/demo. The demo should read these artifacts only and should not train models.",
+  "boundary": {
+    "strict_raw_comparison": "Use 03_results/strict_unsupervised_comparison.md for fair raw transfer comparison without TC.",
+    "final_pipeline": "Use final_outputs predictions and metrics for PG-STDA-SAC-RSPA-TC visualization.",
+    "tc_calibration": "TC is validation-only output calibration; do not use target test labels for calibration.",
+    "ai_images": "AI-generated images under 04_figures/image2_generated are conceptual schematics, not experimental evidence."
+  },
+  "prediction_csvs": {
+    "first_transfer_test": {
+      "path": "competition_artifacts/02_experiments/final_outputs/first_transfer/predictions_test.csv",
+      "role": "final TC test predictions for reaction wheel dashboard panels",
+      "required_columns": [
+        "unit_id",
+        "time_index",
+        "stage",
+        "y_true",
+        "y_pred"
+      ],
+      "min_rows": 1
+    },
+    "first_transfer_val": {
+      "path": "competition_artifacts/02_experiments/final_outputs/first_transfer/predictions_val.csv",
+      "role": "validation predictions used by TC calibration",
+      "required_columns": [
+        "unit_id",
+        "time_index",
+        "stage",
+        "y_true",
+        "y_pred"
+      ],
+      "min_rows": 1
+    },
+    "second_transfer_test": {
+      "path": "competition_artifacts/02_experiments/final_outputs/second_transfer/predictions_test.csv",
+      "role": "final TC test predictions for satellite battery dashboard panels",
+      "required_columns": [
+        "unit_id",
+        "time_index",
+        "stage",
+        "y_true",
+        "y_pred"
+      ],
+      "min_rows": 1
+    },
+    "second_transfer_val": {
+      "path": "competition_artifacts/02_experiments/final_outputs/second_transfer/predictions_val.csv",
+      "role": "validation predictions used by TC calibration",
+      "required_columns": [
+        "unit_id",
+        "time_index",
+        "stage",
+        "y_true",
+        "y_pred"
+      ],
+      "min_rows": 1
+    }
+  },
+  "metrics_jsons": {
+    "first_transfer_metrics": {
+      "path": "competition_artifacts/02_experiments/final_outputs/first_transfer/transfer_metrics.json",
+      "role": "final first-transfer metrics",
+      "required_metrics": [
+        "rmse",
+        "mae",
+        "nasa_score",
+        "ra",
+        "alpha_lambda_0.5",
+        "alpha_lambda_0.8",
+        "last_window_rmse",
+        "last_5_avg_rmse"
+      ]
+    },
+    "second_transfer_metrics": {
+      "path": "competition_artifacts/02_experiments/final_outputs/second_transfer/transfer_metrics.json",
+      "role": "final second-transfer metrics",
+      "required_metrics": [
+        "rmse",
+        "mae",
+        "nasa_score",
+        "ra",
+        "alpha_lambda_0.5",
+        "alpha_lambda_0.8",
+        "last_window_rmse",
+        "last_5_avg_rmse"
+      ]
+    }
+  },
+  "table_csvs": {
+    "metrics_master": {
+      "path": "competition_artifacts/03_results/metrics_master.csv",
+      "role": "all collected experiment metrics",
+      "required_columns": [
+        "task",
+        "group",
+        "method",
+        "rmse",
+        "mae",
+        "nasa_score",
+        "ra",
+        "alpha_lambda_0.5",
+        "alpha_lambda_0.8",
+        "last_window_rmse",
+        "last_5_avg_rmse"
+      ],
+      "min_rows": 1
+    },
+    "tc_ablation_summary": {
+      "path": "competition_artifacts/03_results/tc_ablation/tc_ablation_summary.csv",
+      "role": "TC boundary and time-prior ablation",
+      "required_columns": [
+        "task",
+        "variant",
+        "feature_mode",
+        "uses_target_val_labels",
+        "uses_test_labels_for_fit",
+        "rmse",
+        "mae",
+        "nasa_score",
+        "ra",
+        "alpha_lambda_0.5",
+        "alpha_lambda_0.8",
+        "last_window_rmse",
+        "last_5_avg_rmse"
+      ],
+      "min_rows": 8
+    }
+  },
+  "required_files": {
+    "strict_raw_comparison": {
+      "path": "competition_artifacts/03_results/strict_unsupervised_comparison.md",
+      "role": "main fair raw transfer comparison",
+      "min_bytes": 100
+    },
+    "tc_ablation_markdown": {
+      "path": "competition_artifacts/03_results/tc_ablation/tc_ablation_summary.md",
+      "role": "human-readable TC ablation interpretation",
+      "min_bytes": 100
+    },
+    "final_recommendation": {
+      "path": "competition_artifacts/03_results/final_recommendation.md",
+      "role": "final method and reporting boundary",
+      "min_bytes": 100
+    },
+    "mechanism_observable_figure": {
+      "path": "competition_artifacts/04_figures/figure_5_mechanism_observable_map.png",
+      "role": "mechanism-observable explanatory figure",
+      "min_bytes": 1000
+    },
+    "phm_dashboard_figure": {
+      "path": "competition_artifacts/04_figures/figure_6_phm_application_dashboard.png",
+      "role": "static PHM dashboard figure",
+      "min_bytes": 1000
+    },
+    "representative_prediction_figure": {
+      "path": "competition_artifacts/04_figures/figure_3_representative_predictions.png",
+      "role": "representative final prediction trajectories",
+      "min_bytes": 1000
+    }
+  }
+}
