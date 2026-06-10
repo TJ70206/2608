@@ -36,10 +36,12 @@
 | `mechanism_observable_figure` | `competition_artifacts/04_figures/figure_5_mechanism_observable_map.png` | mechanism-observable explanatory figure |
 | `phm_dashboard_figure` | `competition_artifacts/04_figures/figure_6_phm_application_dashboard.png` | static PHM dashboard figure |
 | `representative_prediction_figure` | `competition_artifacts/04_figures/figure_3_representative_predictions.png` | representative final prediction trajectories |
+| `demo_payload` | `competition_artifacts/05_report_assets/demo_payload.json` | compact dashboard-ready metrics, TC ablation, and representative curves |
 
 ## 边界
 
 - `strict_raw_comparison` 用于公平 raw 迁移对比，不含最终 TC。
 - `final_outputs` 用于 `PG-STDA-SAC-RSPA-TC` 最终工程管线展示。
 - `tc_ablation_summary` 用于说明 TC 与时间先验边界，不能隐藏第二迁移 `time-only TC` 很强这一事实。
+- `demo_payload.json` 是后续 dashboard 的推荐主入口；manifest 中其他文件作为追溯证据。
 - AI 生成概念图只能作为 conceptual schematic，不能替代代码生成的实验图和指标。

@@ -2613,6 +2613,7 @@ def write_artifact_readme() -> None:
         "- 最终预测诊断图展示 `PG-STDA-SAC-RSPA-TC` 的验证集校准后输出；TC 只使用目标域验证集，不使用测试集标签。",
         "- `figure_4_aerospace_workflow_summary.png`、`figure_5_mechanism_observable_map.png`、`figure_6_phm_application_dashboard.png` 用于加分项中的工程流程和可视化展示。",
         "- `04_figures` 下每张主图均同时保留 PNG、SVG、PDF，便于报告排版和后续编辑。",
+        "- `05_report_assets/demo_payload.json` 是后续 dashboard/demo 的推荐主入口，包含指标卡、代表性预测曲线和 TC 消融。",
         "- `05_report_assets/demo_input_manifest.json` 与 `demo_input_manifest.md` 锁定后续 dashboard/demo 的只读输入契约。",
     ]
     (ARTIFACTS / "README.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -2764,8 +2765,123 @@ def build_demo_input_manifest() -> dict[str, Any]:
                 "role": "representative final prediction trajectories",
                 "min_bytes": 1000,
             },
+            "demo_payload": {
+                "path": "competition_artifacts/05_report_assets/demo_payload.json",
+                "role": "compact dashboard-ready metrics, TC ablation, and representative curves",
+                "min_bytes": 1000,
+            },
         },
     }
+
+
+def load_metrics_for_payload(path: Path) -> dict[str, float]:
+    data = load_json(str(path.relative_to(ROOT)))
+    if data is None:
+        raise FileNotFoundError(path)
+    metrics = metric_block(data)
+    return {key: float(metrics[key]) for key in METRIC_KEYS if key in metrics}
+
+
+def representative_curve(rows: list[dict[str, float | str]], max_points: int = 180) -> dict[str, Any]:
+    if not rows:
+        return {"unit_id": "", "points": []}
+    counts: dict[str, int] = {}
+    for row in rows:
+        unit = str(row["unit_id"])
+        counts[unit] = counts.get(unit, 0) + 1
+    unit_id = max(counts, key=counts.get)
+    unit_rows = sorted([row for row in rows if str(row["unit_id"]) == unit_id], key=lambda item: float(item["time_index"]))
+    if len(unit_rows) > max_points:
+        indices = np.linspace(0, len(unit_rows) - 1, max_points).round().astype(int)
+        unit_rows = [unit_rows[int(idx)] for idx in indices]
+    points = [
+        {
+            "time_index": float(row["time_index"]),
+            "stage": int(row["stage"]),
+            "y_true": float(row["y_true"]),
+            "y_pred": float(row["y_pred"]),
+            "abs_error": abs(float(row["y_true"]) - float(row["y_pred"])),
+        }
+        for row in unit_rows
+    ]
+    return {"unit_id": unit_id, "num_points": len(points), "points": points}
+
+
+def read_csv_dicts(path: Path) -> list[dict[str, str]]:
+    with path.open("r", encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f))
+
+
+def write_demo_payload() -> None:
+    task_specs = {
+        "first_transfer": {
+            "label": "第一迁移",
+            "component": "反作用轮",
+            "source_domain": "XJTU-SY Bearing",
+            "target_domain": "reaction_wheel_sim",
+            "metrics_path": ARTIFACTS / "02_experiments/final_outputs/first_transfer/transfer_metrics.json",
+            "predictions_path": ARTIFACTS / "02_experiments/final_outputs/first_transfer/predictions_test.csv",
+        },
+        "second_transfer": {
+            "label": "第二迁移",
+            "component": "卫星电池",
+            "source_domain": "NASA Battery",
+            "target_domain": "satellite_battery_sim",
+            "metrics_path": ARTIFACTS / "02_experiments/final_outputs/second_transfer/transfer_metrics.json",
+            "predictions_path": ARTIFACTS / "02_experiments/final_outputs/second_transfer/predictions_test.csv",
+        },
+    }
+    tasks: dict[str, Any] = {}
+    for task_key, spec in task_specs.items():
+        rows = parse_prediction_csv(spec["predictions_path"])
+        tasks[task_key] = {
+            "label": spec["label"],
+            "component": spec["component"],
+            "source_domain": spec["source_domain"],
+            "target_domain": spec["target_domain"],
+            "method": FINAL_METHOD_SHORT,
+            "metrics": load_metrics_for_payload(spec["metrics_path"]),
+            "representative_curve": representative_curve(rows),
+            "prediction_columns": ["unit_id", "time_index", "stage", "y_true", "y_pred"],
+        }
+    tc_rows = read_csv_dicts(ARTIFACTS / "03_results/tc_ablation/tc_ablation_summary.csv")
+    tc_ablation = [
+        {
+            "task": row["task"],
+            "variant": row["variant"],
+            "feature_mode": row["feature_mode"],
+            "uses_target_val_labels": row["uses_target_val_labels"],
+            "uses_test_labels_for_fit": row["uses_test_labels_for_fit"],
+            "rmse": float(row["rmse"]),
+            "mae": float(row["mae"]),
+            "nasa_score": float(row["nasa_score"]),
+            "ra": float(row["ra"]),
+            "last_window_rmse": float(row["last_window_rmse"]),
+            "rmse_reduction_vs_raw_pct": None
+            if row["rmse_reduction_vs_raw_pct"] == ""
+            else float(row["rmse_reduction_vs_raw_pct"]),
+        }
+        for row in tc_rows
+    ]
+    payload = {
+        "name": "XA-202608 dashboard payload",
+        "method": FINAL_METHOD_DISPLAY,
+        "generated_by": "scripts/prepare_competition_artifacts.py",
+        "tasks": tasks,
+        "tc_ablation": tc_ablation,
+        "figures": {
+            "representative_predictions": "competition_artifacts/04_figures/figure_3_representative_predictions.png",
+            "mechanism_observable_map": "competition_artifacts/04_figures/figure_5_mechanism_observable_map.png",
+            "phm_dashboard": "competition_artifacts/04_figures/figure_6_phm_application_dashboard.png",
+        },
+        "reporting_boundary": {
+            "strict_raw_model": UNCALIBRATED_METHOD_SHORT,
+            "final_pipeline": FINAL_METHOD_SHORT,
+            "tc": "validation-only output calibration; no target test labels for fitting",
+            "demo_scope": "read-only display of existing metrics, predictions, and figures; no training",
+        },
+    }
+    save_json(payload, ARTIFACTS / "05_report_assets/demo_payload.json")
 
 
 def write_demo_input_manifest() -> None:
@@ -2804,6 +2920,7 @@ def write_demo_input_manifest() -> None:
             "- `strict_raw_comparison` 用于公平 raw 迁移对比，不含最终 TC。",
             "- `final_outputs` 用于 `PG-STDA-SAC-RSPA-TC` 最终工程管线展示。",
             "- `tc_ablation_summary` 用于说明 TC 与时间先验边界，不能隐藏第二迁移 `time-only TC` 很强这一事实。",
+            "- `demo_payload.json` 是后续 dashboard 的推荐主入口；manifest 中其他文件作为追溯证据。",
             "- AI 生成概念图只能作为 conceptual schematic，不能替代代码生成的实验图和指标。",
         ]
     )
@@ -2971,6 +3088,7 @@ def write_subfolder_readmes() -> None:
             "本目录保存报告撰写所需的设计、审阅和实验总结材料。",
             "",
             "- `source_docs/`：从项目 `docs/` 复制来的关键文档。",
+            "- `demo_payload.json`：后续动态 demo 的推荐主入口，包含指标、代表性曲线、TC 消融和边界说明。",
             "- `demo_input_manifest.json`：后续动态 demo 的机器可读只读输入契约。",
             "- `demo_input_manifest.md`：后续动态 demo 的人工可读输入清单。",
             "- 这些文档用于支撑数据集设计、方法创新性、实验边界和最终结果解释。",
@@ -3032,6 +3150,7 @@ def main() -> None:
     write_artifact_readme()
     write_requirement_matrix()
     write_dataset_inventory()
+    write_demo_payload()
     write_demo_input_manifest()
     write_cleanup_manifest()
     write_subfolder_readmes()

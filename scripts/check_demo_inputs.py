@@ -86,6 +86,38 @@ def check_required_file(name: str, spec: dict[str, Any], errors: list[str]) -> N
     if path.exists():
         min_bytes = int(spec.get("min_bytes", 1))
         require(path.stat().st_size >= min_bytes, f"{name}: file too small {path}", errors)
+    if name == "demo_payload" and path.exists():
+        check_demo_payload(path, errors)
+
+
+def check_demo_payload(path: Path, errors: list[str]) -> None:
+    payload = load_json(path)
+    tasks = payload.get("tasks", {})
+    require(set(tasks) == {"first_transfer", "second_transfer"}, "demo_payload: expected first_transfer and second_transfer", errors)
+    for task_name, task in tasks.items():
+        metrics = task.get("metrics", {})
+        for key in ("rmse", "mae", "nasa_score", "ra", "last_window_rmse"):
+            require(key in metrics, f"demo_payload/{task_name}: missing metric {key}", errors)
+        curve = task.get("representative_curve", {})
+        points = curve.get("points", [])
+        require(len(points) > 0, f"demo_payload/{task_name}: representative curve is empty", errors)
+        if points:
+            required_point_keys = {"time_index", "stage", "y_true", "y_pred", "abs_error"}
+            require(required_point_keys <= set(points[0]), f"demo_payload/{task_name}: curve point missing keys", errors)
+            for point in points[: min(10, len(points))]:
+                y_true = float(point["y_true"])
+                y_pred = float(point["y_pred"])
+                require(0.0 <= y_true <= 1.0, f"demo_payload/{task_name}: y_true out of normalized range", errors)
+                require(0.0 <= y_pred <= 1.0, f"demo_payload/{task_name}: y_pred out of normalized range", errors)
+    tc_rows = payload.get("tc_ablation", [])
+    require(len(tc_rows) == 8, f"demo_payload: expected 8 TC ablation rows, got {len(tc_rows)}", errors)
+    require(
+        all(row.get("uses_test_labels_for_fit") == "no" for row in tc_rows),
+        "demo_payload: TC ablation must not use test labels for fit",
+        errors,
+    )
+    boundary = payload.get("reporting_boundary", {})
+    require("validation-only" in str(boundary.get("tc", "")), "demo_payload: TC boundary must state validation-only", errors)
 
 
 def main() -> None:

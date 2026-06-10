@@ -25,4 +25,5 @@
 - 最终预测诊断图展示 `PG-STDA-SAC-RSPA-TC` 的验证集校准后输出；TC 只使用目标域验证集，不使用测试集标签。
 - `figure_4_aerospace_workflow_summary.png`、`figure_5_mechanism_observable_map.png`、`figure_6_phm_application_dashboard.png` 用于加分项中的工程流程和可视化展示。
 - `04_figures` 下每张主图均同时保留 PNG、SVG、PDF，便于报告排版和后续编辑。
+- `05_report_assets/demo_payload.json` 是后续 dashboard/demo 的推荐主入口，包含指标卡、代表性预测曲线和 TC 消融。
 - `05_report_assets/demo_input_manifest.json` 与 `demo_input_manifest.md` 锁定后续 dashboard/demo 的只读输入契约。

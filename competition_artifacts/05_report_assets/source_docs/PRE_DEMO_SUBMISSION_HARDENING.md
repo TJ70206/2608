@@ -40,6 +40,7 @@
 - TC 消融预测 CSV；
 - TC 校准系数 JSON；
 - `docs/TC_CALIBRATION_ABLATION.md` 副本。
+- 动态 demo 推荐主入口：`competition_artifacts/05_report_assets/demo_payload.json`。
 - 动态 demo 只读输入清单：`competition_artifacts/05_report_assets/demo_input_manifest.json` 与 `demo_input_manifest.md`。
 
 新增校验入口：
@@ -103,6 +104,7 @@ Metrics rows: 81; TC ablation rows: 8; missing: 0
 | 预测轨迹图 | `competition_artifacts/04_figures/figure_3_representative_predictions.png` |
 | PHM 看板图 | `competition_artifacts/04_figures/figure_6_phm_application_dashboard.png` |
 | 机理-遥测图 | `competition_artifacts/04_figures/figure_5_mechanism_observable_map.png` |
+| demo 推荐主入口 | `competition_artifacts/05_report_assets/demo_payload.json` |
 | demo 输入契约 | `competition_artifacts/05_report_assets/demo_input_manifest.json` |
 | demo 输入说明 | `competition_artifacts/05_report_assets/demo_input_manifest.md` |
 

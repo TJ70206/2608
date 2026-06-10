@@ -167,7 +167,7 @@ competition_artifacts/
 - 严格无监督对比、监督参考、消融、TC 校准消融和参数敏感性表；
 - PNG/SVG/PDF 图件；
 - 报告素材文档；
-- 动态 demo 只读输入清单与校验契约；
+- 动态 demo 推荐 payload、只读输入清单与校验契约；
 - 清理和检查点保留说明；
 - 各子目录中文 `README.md`。
 
