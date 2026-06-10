@@ -108,7 +108,8 @@
 
 - 伪时间阶段是记录时间先验，不是 RUL 标签。
 - 目标训练 RUL 标签不进入 strict raw 训练损失。
-- 建议补充或在报告中展示 `time-only`、`y_pred-only`、`y_pred + time` 的 TC 消融。
+- 已补充 `time-only`、`y_pred-only`、`y_pred + time` 的 TC 消融，见 `docs/TC_CALIBRATION_ABLATION.md` 和 `competition_artifacts/03_results/tc_ablation/tc_ablation_summary.md`。
+- 消融显示第二迁移 `time-only TC` 很强，报告中应把第二迁移 strict raw 结果作为迁移表征主证据，把 TC 后结果定位为验证集校准后的工程预测管线。
 
 ### 4.4 工程复现仍是最大硬分风险
 
@@ -171,7 +172,7 @@
 
 ### P1：强烈建议
 
-- 补 TC 消融：`y_pred only`、`time only`、`y_pred + time`。
+- TC 消融已完成；后续报告直接引用 `TC_CALIBRATION_ABLATION.md`。
 - 对 final raw 和 final TC 做 3 seed 或 bootstrap CI，至少第二迁移补稳定性。
 - 增加 R-SPA 置信门控或 prototype weight 敏感性说明。
 - 加一段自建仿真数据可信度和局限性说明。

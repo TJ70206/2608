@@ -10,6 +10,7 @@ import csv
 import json
 import math
 import shutil
+import sys
 import textwrap
 from dataclasses import dataclass
 from pathlib import Path
@@ -25,8 +26,26 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACTS = ROOT / "competition_artifacts"
+SRC_DIR = ROOT / "src"
+if str(SRC_DIR) not in sys.path:
+    sys.path.insert(0, str(SRC_DIR))
+
+from xa202608.experiment_io import save_prediction_csv
+from xa202608.metrics import rul_metrics_with_time
+from xa202608.utils import save_json
 
 METRIC_KEYS = [
+    "rmse",
+    "mae",
+    "nasa_score",
+    "ra",
+    "alpha_lambda_0.5",
+    "alpha_lambda_0.8",
+    "last_window_rmse",
+    "last_5_avg_rmse",
+]
+
+TC_ABLATION_METRIC_KEYS = [
     "rmse",
     "mae",
     "nasa_score",
@@ -593,7 +612,11 @@ DOCS_TO_COPY = [
     "docs/SECOND_TRANSFER_PG_STDA_INNOVATION_RESULTS.md",
     "docs/FIRST_TRANSFER_BASELINE_GRID_UPDATE.md",
     "docs/SECOND_TRANSFER_BASELINE_OPTIMIZATION_UPDATE.md",
+    "docs/TC_CALIBRATION_ABLATION.md",
+    "docs/PRE_DEMO_SUBMISSION_HARDENING.md",
 ]
+
+IMAGE2_SOURCE = ROOT.parent / "提交初版" / "image-2 codex" / "selected"
 
 
 def ensure_clean_artifacts() -> None:
@@ -828,6 +851,227 @@ def copy_if_exists(src_rel: str, dst: Path) -> None:
         shutil.copy2(src, dst)
 
 
+def load_prediction_arrays(path: Path) -> dict[str, np.ndarray]:
+    rows = parse_prediction_csv(path)
+    if not rows:
+        raise ValueError(f"prediction CSV is empty or missing: {path}")
+    return {
+        "unit_id": np.asarray([row["unit_id"] for row in rows]),
+        "time_index": np.asarray([row["time_index"] for row in rows], dtype=np.float64),
+        "stage": np.asarray([row["stage"] for row in rows], dtype=np.int64),
+        "y_true": np.asarray([row["y_true"] for row in rows], dtype=np.float64),
+        "y_pred": np.asarray([row["y_pred"] for row in rows], dtype=np.float64),
+    }
+
+
+def clone_prediction_arrays(pred: dict[str, np.ndarray]) -> dict[str, np.ndarray]:
+    return {key: np.array(value, copy=True) for key, value in pred.items()}
+
+
+def tc_feature_matrix(
+    pred: dict[str, np.ndarray],
+    feature_mode: str,
+    degree: int,
+    time_min: float,
+    time_scale: float,
+) -> np.ndarray:
+    y_pred = pred["y_pred"].astype(np.float64).reshape(-1)
+    time_index = pred["time_index"].astype(np.float64).reshape(-1)
+    time_feature = np.clip((time_index - float(time_min)) / float(time_scale), 0.0, 1.0)
+    if feature_mode == "y_pred":
+        columns = [np.ones_like(y_pred), y_pred]
+        if int(degree) >= 2:
+            columns.append(y_pred**2)
+    elif feature_mode == "time":
+        columns = [np.ones_like(y_pred), time_feature]
+        if int(degree) >= 2:
+            columns.append(time_feature**2)
+    elif feature_mode == "y_pred_time":
+        columns = [np.ones_like(y_pred), y_pred, time_feature]
+        if int(degree) >= 2:
+            columns.extend([y_pred**2, time_feature**2, y_pred * time_feature])
+    else:
+        raise ValueError("feature_mode must be y_pred, time, or y_pred_time")
+    return np.vstack(columns).T
+
+
+def fit_tc_ablation(
+    val_pred: dict[str, np.ndarray],
+    feature_mode: str,
+    degree: int = 2,
+    ridge: float = 0.01,
+) -> dict[str, Any]:
+    time_values = val_pred["time_index"].astype(np.float64)
+    time_min = float(np.min(time_values))
+    time_scale = max(float(np.max(time_values) - time_min), 1e-8)
+    x = tc_feature_matrix(val_pred, feature_mode, degree, time_min, time_scale)
+    y = val_pred["y_true"].astype(np.float64).reshape(-1)
+    regularizer = float(ridge) * np.eye(x.shape[1], dtype=np.float64)
+    regularizer[0, 0] = 0.0
+    coef = np.linalg.solve(x.T @ x + regularizer, x.T @ y)
+    return {
+        "feature_mode": feature_mode,
+        "degree": int(degree),
+        "ridge": float(ridge),
+        "time_min": time_min,
+        "time_scale": time_scale,
+        "coef": coef,
+    }
+
+
+def apply_tc_ablation(
+    pred: dict[str, np.ndarray],
+    calibration: dict[str, Any],
+    clip_range: tuple[float, float] = (0.0, 1.0),
+) -> dict[str, np.ndarray]:
+    out = clone_prediction_arrays(pred)
+    x = tc_feature_matrix(
+        out,
+        str(calibration["feature_mode"]),
+        int(calibration["degree"]),
+        float(calibration["time_min"]),
+        float(calibration["time_scale"]),
+    )
+    out["y_pred"] = np.clip(x @ calibration["coef"], float(clip_range[0]), float(clip_range[1]))
+    return out
+
+
+def tc_ablation_markdown(rows: list[dict[str, Any]]) -> str:
+    lines = [
+        "# Validation-only TC 消融结果",
+        "",
+        "本文件用于回答最终 `PG-STDA-SAC-RSPA-TC` 中 `TC` 是否只是依赖时间先验的问题。消融只基于已经训练好的 raw `PG-STDA-SAC-RSPA` 输出，不重新训练模型。",
+        "",
+        "## 实验口径",
+        "",
+        "- `raw`：未校准的 `PG-STDA-SAC-RSPA` 预测。",
+        "- `y_pred-only TC`：只用验证集 raw `y_pred` 拟合 ridge 校准。",
+        "- `time-only TC`：只用验证集 `time_index` 拟合 ridge 校准，用作时间先验负控。",
+        "- `y_pred+time TC`：使用验证集 raw `y_pred` 与 `time_index`，对应最终 `PG-STDA-SAC-RSPA-TC`。",
+        "- 所有 TC 变体只使用目标验证集标签拟合校准映射，不使用测试标签，不重新训练模型。",
+        "",
+        "指标方向：RMSE、MAE、NASA、Last RMSE 越低越好；RA 越高越好。",
+        "",
+        "## 结果表",
+        "",
+        "| 任务 | 消融口径 | 特征 | RMSE | MAE | NASA | RA | Last RMSE | RMSE较raw降低 |",
+        "|---|---|---|---:|---:|---:|---:|---:|---:|",
+    ]
+    for row in rows:
+        gain = row.get("rmse_reduction_vs_raw_pct")
+        gain_text = "-" if gain == "" else f"{float(gain):.1f}%"
+        lines.append(
+            "| "
+            + " | ".join(
+                [
+                    str(row["task"]),
+                    str(row["variant"]),
+                    str(row["feature_mode"]),
+                    f"{float(row['rmse']):.4f}",
+                    f"{float(row['mae']):.4f}",
+                    f"{float(row['nasa_score']):.4f}",
+                    f"{float(row['ra']):.4f}",
+                    f"{float(row['last_window_rmse']):.4f}",
+                    gain_text,
+                ]
+            )
+            + " |"
+        )
+    lines.extend(
+        [
+            "",
+            "## 结论",
+            "",
+            "第一迁移中，`y_pred+time TC` 明显优于 `time-only TC`，说明 raw 迁移预测与时间先验具有互补性，最终 TC 主要是在 raw 模型输出基础上修正跨域尺度偏差。",
+            "",
+            "第二迁移中，`time-only TC` 的 RMSE 略低于 `y_pred+time TC`，说明卫星电池仿真目标域具有较强的轨道周期/生命周期时间先验。报告中应据此保持谨慎：第二迁移的 strict raw 结果才是迁移表征能力的主证据，TC 后结果应定位为 validation-only 工程校准管线，而不是纯无监督迁移训练能力。",
+            "",
+            "本消融不改变主结论边界：",
+            "",
+            "- strict raw 迁移能力仍以未校准 `PG-STDA-SAC-RSPA` 为准；",
+            "- `PG-STDA-SAC-RSPA-TC` 是 validation-only calibrated final engineering pipeline；",
+            "- TC 不应被表述为严格无目标标签的训练模块。",
+        ]
+    )
+    return "\n".join(lines) + "\n"
+
+
+def write_tc_ablation() -> list[dict[str, Any]]:
+    output_dir = ARTIFACTS / "03_results/tc_ablation"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    task_specs = [
+        (
+            "第一迁移",
+            ROOT / "outputs/first_transfer_pg_stda_rspa_50e/pg_stda_sac_rspa_w0p0005_c0p5_srcsup0p7_50e",
+            "first_transfer",
+        ),
+        (
+            "第二迁移",
+            ROOT / "outputs/second_transfer_pg_stda_rspa_50e/pg_stda_sac_rspa_w0p001_c0p5_srcsup0p7_50e",
+            "second_transfer",
+        ),
+    ]
+    all_rows: list[dict[str, Any]] = []
+    for task, input_dir, task_slug in task_specs:
+        val_raw = load_prediction_arrays(input_dir / "predictions_val.csv")
+        test_raw = load_prediction_arrays(input_dir / "predictions_test.csv")
+        raw_metrics = rul_metrics_with_time(test_raw["y_true"], test_raw["y_pred"], test_raw["unit_id"], test_raw["time_index"])
+        raw_rmse = float(raw_metrics["rmse"])
+        variants = [
+            ("raw", "none", None, test_raw),
+            ("y_pred-only TC", "y_pred", "y_pred", None),
+            ("time-only TC", "time", "time", None),
+            ("y_pred+time TC", "y_pred,time_index", "y_pred_time", None),
+        ]
+        task_dir = output_dir / task_slug
+        task_dir.mkdir(parents=True, exist_ok=True)
+        calibrations: dict[str, Any] = {}
+        for variant, feature_label, feature_mode, explicit_pred in variants:
+            if feature_mode is None:
+                pred = clone_prediction_arrays(explicit_pred if explicit_pred is not None else test_raw)
+            else:
+                calibration = fit_tc_ablation(val_raw, feature_mode=feature_mode, degree=2, ridge=0.01)
+                pred = apply_tc_ablation(test_raw, calibration)
+                calibrations[variant] = {
+                    **{k: v for k, v in calibration.items() if k != "coef"},
+                    "coef": calibration["coef"].tolist(),
+                }
+            safe_name = variant.replace(" ", "_").replace("+", "plus").replace("-", "_")
+            save_prediction_csv(pred, task_dir / f"{safe_name}_predictions_test.csv")
+            metrics = rul_metrics_with_time(pred["y_true"], pred["y_pred"], pred["unit_id"], pred["time_index"])
+            rmse = float(metrics["rmse"])
+            row: dict[str, Any] = {
+                "task": task,
+                "variant": variant,
+                "feature_mode": feature_label,
+                "uses_target_val_labels": "no" if feature_mode is None else "yes",
+                "uses_test_labels_for_fit": "no",
+                "degree": "" if feature_mode is None else 2,
+                "ridge": "" if feature_mode is None else 0.01,
+                "rmse_delta_vs_raw": rmse - raw_rmse,
+                "rmse_reduction_vs_raw_pct": "" if feature_mode is None else 100.0 * (raw_rmse - rmse) / raw_rmse,
+            }
+            row.update({key: float(metrics[key]) for key in TC_ABLATION_METRIC_KEYS})
+            all_rows.append(row)
+        save_json(
+            {
+                "task": task,
+                "input_dir": str(input_dir),
+                "degree": 2,
+                "ridge": 0.01,
+                "clip_range": [0.0, 1.0],
+                "calibrations": calibrations,
+                "rows": [r for r in all_rows if r["task"] == task],
+            },
+            task_dir / "tc_ablation_metrics.json",
+        )
+    write_csv(output_dir / "tc_ablation_summary.csv", all_rows)
+    markdown = tc_ablation_markdown(all_rows)
+    (output_dir / "tc_ablation_summary.md").write_text(markdown, encoding="utf-8")
+    (ROOT / "docs/TC_CALIBRATION_ABLATION.md").write_text(markdown, encoding="utf-8")
+    return all_rows
+
+
 def copy_final_evidence() -> None:
     for exp in EXPERIMENTS:
         if exp.config_path:
@@ -848,6 +1092,24 @@ def copy_final_evidence() -> None:
                 shutil.copy2(src, target_dir / name)
     for doc in DOCS_TO_COPY:
         copy_if_exists(doc, ARTIFACTS / "05_report_assets/source_docs" / Path(doc).name)
+    if IMAGE2_SOURCE.exists():
+        image2_target = ARTIFACTS / "04_figures/image2_generated"
+        image2_target.mkdir(parents=True, exist_ok=True)
+        for image in sorted(IMAGE2_SOURCE.glob("*.png")):
+            shutil.copy2(image, image2_target / image.name)
+        (image2_target / "README.md").write_text(
+            "\n".join(
+                [
+                    "# AI 概念图",
+                    "",
+                    "本目录保存使用 image-2 生成并人工筛选的概念图，用于报告封面、章节引导或答辩视觉增强。",
+                    "",
+                    "注意：这些图是 conceptual schematic，不作为实验指标或模型效果证据。正式实验结论应引用 `04_figures` 下由代码生成的指标图、预测图和消融图。",
+                ]
+            )
+            + "\n",
+            encoding="utf-8",
+        )
 
 
 def parse_prediction_csv(path: Path) -> list[dict[str, float | str]]:
@@ -2301,7 +2563,7 @@ def write_requirement_matrix() -> None:
         "| 数据生成与数据集可复现 | `01_datasets/dataset_inventory.md`；项目源码中的生成脚本 | 已覆盖 |",
         "| PyTorch 训练、迁移和预测流程 | `02_experiments` 下的最终配置与输出证据 | 已覆盖 |",
         "| 同数据条件下与基础模型/方法对比 | `03_results/strict_unsupervised_comparison.md` 与监督参考表 | 已覆盖 |",
-        "| 消融实验 | `03_results/ablation_table.md` | 已覆盖 |",
+        "| 消融实验 | `03_results/ablation_table.md` 与 `03_results/tc_ablation/tc_ablation_summary.md` | 已覆盖 |",
         "| 参数敏感性分析 | `03_results/parameter_sensitivity.md` 与参数敏感性补充图 | 已覆盖 |",
         "| 误差、稳定性和临近失效分析 | RMSE/MAE/NASA/RA/alpha/末窗口指标表与阶段误差图 | 已覆盖 |",
         "| 加分项：直观退化过程与工程应用可视化 | Nature-style 主图、流程图、机理-遥测映射图和 PHM 应用看板 | 已覆盖 |",
@@ -2325,7 +2587,7 @@ def write_artifact_readme() -> None:
         "| `00_requirement_mapping` | 比赛硬要求与证据文件的对应关系。 |",
         "| `01_datasets` | 数据集清单、数据角色和存在性检查。 |",
         "| `02_experiments` | 最终配置文件、最终预测文件和最终指标输出。 |",
-        "| `03_results` | 总指标 CSV、公平对比表、监督参考表、消融表和参数敏感性表。 |",
+        "| `03_results` | 总指标 CSV、公平对比表、监督参考表、消融表、TC 校准消融和参数敏感性表。 |",
         "| `04_figures` | 可直接放入报告/答辩材料的 PNG/SVG/PDF 图件。 |",
         "| `05_report_assets` | 数据集设计、方法创新和实验更新等报告素材文档。 |",
         "| `99_cleanup` | 产物包清理说明和最终检查点保留策略。 |",
@@ -2335,6 +2597,7 @@ def write_artifact_readme() -> None:
         "- `strict_unsupervised_comparison.md` 是主公平对比表，只比较未经过最终输出校准的 raw 迁移输出。",
         "- `supervised_reference_comparison.md` 是监督参考/上界类对比，不与严格无监督迁移主张混为一类。",
         "- `ablation_table.md` 和 `parameter_sensitivity.md` 用于支撑方法模块有效性和鲁棒性讨论。",
+        "- `03_results/tc_ablation/tc_ablation_summary.md` 单独说明 TC 的 `raw`、`y_pred-only`、`time-only`、`y_pred+time` 消融，避免把输出校准误说成纯迁移训练能力。",
         "- `figure_1_strict_transfer_performance.png` 展示 raw 迁移输出的公平对比。",
         "- 最终预测诊断图展示 `PG-STDA-SAC-RSPA-TC` 的验证集校准后输出；TC 只使用目标域验证集，不使用测试集标签。",
         "- `figure_4_aerospace_workflow_summary.png`、`figure_5_mechanism_observable_map.png`、`figure_6_phm_application_dashboard.png` 用于加分项中的工程流程和可视化展示。",
@@ -2410,6 +2673,7 @@ def write_final_recommendation(final_rows: list[dict[str, Any]]) -> None:
             "",
             "- 严格无监督迁移训练不在迁移损失中使用目标域训练集 RUL 标签。",
             "- 最终 TC 只使用目标域验证集标签做输出校准，绝不使用目标测试集标签或测试集派生阶段。",
+            "- TC 消融见 `03_results/tc_ablation/tc_ablation_summary.md`：第一迁移中 `y_pred+time` 优于 `time-only`；第二迁移中 `time-only` 很强，说明电池仿真域存在显著时间先验，报告中应把第二迁移 strict raw 结果作为迁移表征主证据。",
             "- `target-only` 与 `target-supervised` 结果属于监督参考/上界，不作为严格无监督迁移主张。",
             "- 最终方法作为两个场景统一的迁移框架提交，避免第一迁移和第二迁移分别使用完全不同模型造成方案割裂。",
         ]
@@ -2514,6 +2778,7 @@ def write_subfolder_readmes() -> None:
             "- `strict_unsupervised_comparison.md`：主公平对比表，使用 raw 迁移输出，不含 TC。",
             "- `supervised_reference_comparison.md`：监督参考/上界类结果。",
             "- `ablation_table.md`：模块消融。",
+            "- `tc_ablation/tc_ablation_summary.md`：TC 输出校准消融，包含 time-only 负控。",
             "- `parameter_sensitivity.md`：关键参数敏感性。",
             "- `final_recommendation.md`：最终统一方法和报告口径边界。",
         ],
@@ -2544,7 +2809,7 @@ def write_subfolder_readmes() -> None:
             "本目录是报告素材文档的副本，便于在证据包内集中查看。",
             "",
             "- 数据集设计：`REACTION_WHEEL_SIM_DATASET_DESIGN_REVIEW.md`、`SATELLITE_BATTERY_SIM_DATASET_DESIGN_REVIEW.md`。",
-            "- 方法创新与最终结果：`METHOD_NOVELTY_FRONTIER_RESEARCH_REVIEW.md`、`PG_STDA_SAC_FINAL_CROSS_TRANSFER_RESULTS.md`、`SECOND_TRANSFER_PG_STDA_INNOVATION_RESULTS.md`。",
+            "- 方法创新与最终结果：`METHOD_NOVELTY_FRONTIER_RESEARCH_REVIEW.md`、`PG_STDA_SAC_FINAL_CROSS_TRANSFER_RESULTS.md`、`SECOND_TRANSFER_PG_STDA_INNOVATION_RESULTS.md`、`TC_CALIBRATION_ABLATION.md`。",
             "- 基线与优化更新：`FIRST_TRANSFER_BASELINE_GRID_UPDATE.md`、`SECOND_TRANSFER_BASELINE_OPTIMIZATION_UPDATE.md`。",
         ],
         "99_cleanup/README.md": [
@@ -2587,6 +2852,7 @@ def main() -> None:
         sensitivity_rows,
     )
     write_final_recommendation([r for r in rows if r["group"] == "final"])
+    tc_rows = write_tc_ablation()
 
     copy_final_evidence()
     write_artifact_readme()
@@ -2617,7 +2883,7 @@ def main() -> None:
         write_markdown_table(ARTIFACTS / "99_cleanup/missing_metrics.md", "Missing Metrics", missing)
 
     print(f"Wrote artifacts to {ARTIFACTS}")
-    print(f"Metrics rows: {len(all_rows)}; missing: {len(missing)}")
+    print(f"Metrics rows: {len(all_rows)}; TC ablation rows: {len(tc_rows)}; missing: {len(missing)}")
 
 
 if __name__ == "__main__":

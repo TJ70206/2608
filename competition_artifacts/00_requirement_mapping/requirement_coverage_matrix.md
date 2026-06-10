@@ -9,7 +9,7 @@
 | 数据生成与数据集可复现 | `01_datasets/dataset_inventory.md`；项目源码中的生成脚本 | 已覆盖 |
 | PyTorch 训练、迁移和预测流程 | `02_experiments` 下的最终配置与输出证据 | 已覆盖 |
 | 同数据条件下与基础模型/方法对比 | `03_results/strict_unsupervised_comparison.md` 与监督参考表 | 已覆盖 |
-| 消融实验 | `03_results/ablation_table.md` | 已覆盖 |
+| 消融实验 | `03_results/ablation_table.md` 与 `03_results/tc_ablation/tc_ablation_summary.md` | 已覆盖 |
 | 参数敏感性分析 | `03_results/parameter_sensitivity.md` 与参数敏感性补充图 | 已覆盖 |
 | 误差、稳定性和临近失效分析 | RMSE/MAE/NASA/RA/alpha/末窗口指标表与阶段误差图 | 已覆盖 |
 | 加分项：直观退化过程与工程应用可视化 | Nature-style 主图、流程图、机理-遥测映射图和 PHM 应用看板 | 已覆盖 |

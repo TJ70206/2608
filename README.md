@@ -164,7 +164,7 @@ competition_artifacts/
 - 比赛要求覆盖矩阵；
 - 数据集清单；
 - 最终配置和最终输出；
-- 严格无监督对比、监督参考、消融和参数敏感性表；
+- 严格无监督对比、监督参考、消融、TC 校准消融和参数敏感性表；
 - PNG/SVG/PDF 图件；
 - 报告素材文档；
 - 清理和检查点保留说明；
@@ -176,6 +176,7 @@ competition_artifacts/
 
 - 主公平对比：`strict_unsupervised_comparison.md`，只使用未校准 raw 迁移输出，不含 `TC`。
 - 最终方案展示：`PG-STDA-SAC-RSPA-TC`，TC 只使用目标域验证集，不使用测试集标签。
+- TC 边界检查：`competition_artifacts/03_results/tc_ablation/tc_ablation_summary.md`，包含 `raw`、`y_pred-only`、`time-only`、`y_pred+time` 四种消融。
 - 监督参考：`target-only`、`target-supervised`、`fine-tune`、集成模型等，只作为参考或上界类结果，不与严格无监督迁移主张混用。
 
 ## 测试

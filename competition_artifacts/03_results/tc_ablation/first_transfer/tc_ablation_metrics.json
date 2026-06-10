@@ -1,0 +1,129 @@
+{
+  "task": "第一迁移",
+  "input_dir": "D:\\桌面\\研究生资料\\揭榜挂帅\\codex\\XA-202608 基于跨领域退化数据迁移的航天器关键组件寿命预测方法研究\\我们的代码\\outputs\\first_transfer_pg_stda_rspa_50e\\pg_stda_sac_rspa_w0p0005_c0p5_srcsup0p7_50e",
+  "degree": 2,
+  "ridge": 0.01,
+  "clip_range": [
+    0.0,
+    1.0
+  ],
+  "calibrations": {
+    "y_pred-only TC": {
+      "feature_mode": "y_pred",
+      "degree": 2,
+      "ridge": 0.01,
+      "time_min": 7.0,
+      "time_scale": 160.0,
+      "coef": [
+        -0.01980217110965808,
+        1.1062163883281697,
+        -0.14078400441060548
+      ]
+    },
+    "time-only TC": {
+      "feature_mode": "time",
+      "degree": 2,
+      "ridge": 0.01,
+      "time_min": 7.0,
+      "time_scale": 160.0,
+      "coef": [
+        0.8818752099112424,
+        -1.622823645243167,
+        0.8235877410843925
+      ]
+    },
+    "y_pred+time TC": {
+      "feature_mode": "y_pred_time",
+      "degree": 2,
+      "ridge": 0.01,
+      "time_min": 7.0,
+      "time_scale": 160.0,
+      "coef": [
+        -0.07522004633325015,
+        2.0240496748849037,
+        0.2557635193952973,
+        -1.0308844907801076,
+        -0.22512318334210055,
+        -1.4425572028800375
+      ]
+    }
+  },
+  "rows": [
+    {
+      "task": "第一迁移",
+      "variant": "raw",
+      "feature_mode": "none",
+      "uses_target_val_labels": "no",
+      "uses_test_labels_for_fit": "no",
+      "degree": "",
+      "ridge": "",
+      "rmse_delta_vs_raw": 0.0,
+      "rmse_reduction_vs_raw_pct": "",
+      "rmse": 0.12737950231141576,
+      "mae": 0.10038491985974357,
+      "nasa_score": 7.024942799628777,
+      "ra": 0.6902202302604445,
+      "alpha_lambda_0.5": 0.4024390243902439,
+      "alpha_lambda_0.8": 0.35294117647058826,
+      "last_window_rmse": 0.17322248623343536,
+      "last_5_avg_rmse": 0.16204225442697304
+    },
+    {
+      "task": "第一迁移",
+      "variant": "y_pred-only TC",
+      "feature_mode": "y_pred",
+      "uses_target_val_labels": "yes",
+      "uses_test_labels_for_fit": "no",
+      "degree": 2,
+      "ridge": 0.01,
+      "rmse_delta_vs_raw": -0.0005648600711721796,
+      "rmse_reduction_vs_raw_pct": 0.4434465992740473,
+      "rmse": 0.12681464224024358,
+      "mae": 0.10004804830556177,
+      "nasa_score": 6.912051247914623,
+      "ra": 0.6944756036002998,
+      "alpha_lambda_0.5": 0.43902439024390244,
+      "alpha_lambda_0.8": 0.35294117647058826,
+      "last_window_rmse": 0.16856460055139394,
+      "last_5_avg_rmse": 0.1562535972618441
+    },
+    {
+      "task": "第一迁移",
+      "variant": "time-only TC",
+      "feature_mode": "time",
+      "uses_target_val_labels": "yes",
+      "uses_test_labels_for_fit": "no",
+      "degree": 2,
+      "ridge": 0.01,
+      "rmse_delta_vs_raw": -0.023630596932977088,
+      "rmse_reduction_vs_raw_pct": 18.551334009144824,
+      "rmse": 0.10374890537843867,
+      "mae": 0.08222944899054917,
+      "nasa_score": 5.724980449932884,
+      "ra": 0.7198394608847971,
+      "alpha_lambda_0.5": 0.6585365853658537,
+      "alpha_lambda_0.8": 0.35294117647058826,
+      "last_window_rmse": 0.21052726375390568,
+      "last_5_avg_rmse": 0.226833215478015
+    },
+    {
+      "task": "第一迁移",
+      "variant": "y_pred+time TC",
+      "feature_mode": "y_pred,time_index",
+      "uses_target_val_labels": "yes",
+      "uses_test_labels_for_fit": "no",
+      "degree": 2,
+      "ridge": 0.01,
+      "rmse_delta_vs_raw": -0.03826670637404063,
+      "rmse_reduction_vs_raw_pct": 30.041494651538738,
+      "rmse": 0.08911279593737513,
+      "mae": 0.06912726886080743,
+      "nasa_score": 4.8413769944431895,
+      "ra": 0.741846046519735,
+      "alpha_lambda_0.5": 0.6951219512195121,
+      "alpha_lambda_0.8": 0.3411764705882353,
+      "last_window_rmse": 0.13999246551920136,
+      "last_5_avg_rmse": 0.14507746388937198
+    }
+  ]
+}

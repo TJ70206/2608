@@ -9,4 +9,3 @@
 - `figure_5_mechanism_observable_map.*`：退化机理到可观测遥测的映射。
 - `figure_6_phm_application_dashboard.*`：面向 PHM 应用的风险看板。
 - `supp_*`：补充诊断图和参数敏感性图。
-- `image2_generated/`：使用 imagegen 生成的报告视觉增强图，适合封面、方案总览和应用表达，不替代精确指标图。
