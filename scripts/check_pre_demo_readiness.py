@@ -86,6 +86,18 @@ CHECKS: list[dict[str, Any]] = [
             "validation-only",
         ],
     },
+    {
+        "name": "html_demo_index",
+        "path": "competition_artifacts/06_html_demo/index.html",
+        "kind": "file",
+        "min_bytes": 1000,
+    },
+    {
+        "name": "html_demo_data",
+        "path": "competition_artifacts/06_html_demo/assets/demo-data.js",
+        "kind": "file",
+        "min_bytes": 1000,
+    },
 ]
 
 
@@ -132,11 +144,31 @@ def run_demo_input_check() -> dict[str, Any]:
         cwd=PROJECT_ROOT,
         capture_output=True,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         check=False,
     )
     return {
         "name": "check_demo_inputs",
         "path": "scripts/check_demo_inputs.py",
+        "ok": result.returncode == 0,
+        "details": [line for line in (result.stdout + result.stderr).splitlines() if line],
+    }
+
+
+def run_html_demo_check() -> dict[str, Any]:
+    result = subprocess.run(
+        [sys.executable, "scripts/check_html_demo.py"],
+        cwd=PROJECT_ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        check=False,
+    )
+    return {
+        "name": "check_html_demo",
+        "path": "scripts/check_html_demo.py",
         "ok": result.returncode == 0,
         "details": [line for line in (result.stdout + result.stderr).splitlines() if line],
     }
@@ -170,7 +202,7 @@ def build_report(results: list[dict[str, Any]]) -> str:
 
 
 def main() -> None:
-    results = [run_demo_input_check()]
+    results = [run_demo_input_check(), run_html_demo_check()]
     for spec in CHECKS:
         if spec["kind"] == "file":
             results.append(check_file(spec))

@@ -21,4 +21,10 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $Python scripts/check_demo_inputs.py
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
+& $Python scripts/check_html_demo.py
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+& $Python scripts/check_pre_demo_readiness.py
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
 Write-Host "Smoke tests passed."

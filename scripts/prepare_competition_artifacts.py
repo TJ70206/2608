@@ -637,6 +637,7 @@ def ensure_clean_artifacts() -> None:
         "03_results",
         "04_figures",
         "05_report_assets/source_docs",
+        "06_html_demo",
         "99_cleanup",
     ]:
         (ARTIFACTS / rel).mkdir(parents=True, exist_ok=True)
@@ -2618,6 +2619,7 @@ def write_artifact_readme() -> None:
         "- `05_report_assets/demo_payload.json` 是后续 dashboard/demo 的推荐主入口，包含指标卡、代表性预测曲线和 TC 消融。",
         "- `05_report_assets/demo_input_manifest.json` 与 `demo_input_manifest.md` 锁定后续 dashboard/demo 的只读输入契约。",
         "- `05_report_assets/pre_demo_readiness.md` 与 `pre_demo_readiness.json` 记录 Docker 和动态 demo 前的总就绪检查。",
+        "- `06_html_demo/index.html` 是可离线打开的动态 HTML demo，读取 `assets/demo-data.js` 中的真实实验产物。",
     ]
     (ARTIFACTS / "README.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -3097,6 +3099,16 @@ def write_subfolder_readmes() -> None:
             "- `pre_demo_readiness.md`：Docker 和动态 demo 前的总就绪检查报告。",
             "- 这些文档用于支撑数据集设计、方法创新性、实验边界和最终结果解释。",
         ],
+        "06_html_demo/README.md": [
+            "# 动态 HTML Demo",
+            "",
+            "本目录保存可离线打开的动态 demo 产物。",
+            "",
+            "- `index.html`：主页面，双击即可打开。",
+            "- `assets/demo-data.js`：由 `05_report_assets/demo_payload.json` 自动转换生成。",
+            "- `assets/demo.js` 与 `assets/demo.css`：离线交互和样式文件。",
+            "- Demo 只读已有实验结果，不现场训练模型，不重新拟合 TC，不使用目标测试标签做校准。",
+        ],
         "05_report_assets/source_docs/README.md": [
             "# 源文档副本",
             "",
@@ -3177,6 +3189,20 @@ def main() -> None:
     plot_second_calibration_effect()
     plot_parameter_sensitivity(sensitivity_rows)
 
+    html_demo = subprocess.run(
+        [sys.executable, "scripts/build_html_demo.py"],
+        cwd=ROOT,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        capture_output=True,
+        check=False,
+    )
+    if html_demo.returncode != 0:
+        print(html_demo.stdout)
+        print(html_demo.stderr, file=sys.stderr)
+        raise RuntimeError("HTML demo build failed")
+
     missing = [r for r in all_rows if not r["exists"]]
     if missing:
         write_markdown_table(ARTIFACTS / "99_cleanup/missing_metrics.md", "Missing Metrics", missing)
@@ -3185,6 +3211,8 @@ def main() -> None:
         [sys.executable, "scripts/check_pre_demo_readiness.py"],
         cwd=ROOT,
         text=True,
+        encoding="utf-8",
+        errors="replace",
         capture_output=True,
         check=False,
     )

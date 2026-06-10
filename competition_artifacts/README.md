@@ -28,3 +28,4 @@
 - `05_report_assets/demo_payload.json` 是后续 dashboard/demo 的推荐主入口，包含指标卡、代表性预测曲线和 TC 消融。
 - `05_report_assets/demo_input_manifest.json` 与 `demo_input_manifest.md` 锁定后续 dashboard/demo 的只读输入契约。
 - `05_report_assets/pre_demo_readiness.md` 与 `pre_demo_readiness.json` 记录 Docker 和动态 demo 前的总就绪检查。
+- `06_html_demo/index.html` 是可离线打开的动态 HTML demo，读取 `assets/demo-data.js` 中的真实实验产物。

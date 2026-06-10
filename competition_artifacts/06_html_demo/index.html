@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XA-202608 航天器关键组件寿命预测动态 Demo</title>
+  <link rel="stylesheet" href="assets/demo.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="主导航">
+      <div class="brand-block">
+        <div class="brand-code">XA-202608</div>
+        <div class="orbit-mark" aria-hidden="true">
+          <span class="satellite-body"></span>
+          <span class="orbit-line"></span>
+        </div>
+        <div class="brand-subtitle">跨领域退化迁移</div>
+      </div>
+
+      <nav class="side-nav">
+        <button class="nav-item is-active" type="button" data-view="overview">
+          <span class="nav-icon">01</span><span>总览</span>
+        </button>
+        <button class="nav-item" type="button" data-view="data">
+          <span class="nav-icon">02</span><span>数据导入</span>
+        </button>
+        <button class="nav-item" type="button" data-view="wheel">
+          <span class="nav-icon">03</span><span>反作用轮</span>
+        </button>
+        <button class="nav-item" type="button" data-view="battery">
+          <span class="nav-icon">04</span><span>卫星电池</span>
+        </button>
+        <button class="nav-item" type="button" data-view="method">
+          <span class="nav-icon">05</span><span>迁移方法</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="status-dot"></div>
+        <div>
+          <div class="muted">系统状态</div>
+          <strong>只读展示</strong>
+        </div>
+      </div>
+    </aside>
+
+    <main class="workspace">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Aerospace PHM Dashboard</p>
+          <h1>航天器关键组件寿命预测动态 Demo</h1>
+          <p class="subtitle">公开退化源域训练 · 航天仿真目标域适配 · 严谨可复现</p>
+        </div>
+        <div class="topbar-actions">
+          <span class="mode-pill">strict raw UDA</span>
+          <span class="mode-pill green">validation-calibrated pipeline</span>
+          <span class="mode-pill violet">read-only demo</span>
+        </div>
+      </header>
+
+      <section id="app" class="content" aria-live="polite"></section>
+    </main>
+  </div>
+
+  <script src="assets/demo-data.js"></script>
+  <script src="assets/demo.js"></script>
+</body>
+</html>

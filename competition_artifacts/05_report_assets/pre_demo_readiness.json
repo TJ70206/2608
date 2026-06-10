@@ -10,6 +10,14 @@
       ]
     },
     {
+      "name": "check_html_demo",
+      "path": "scripts/check_html_demo.py",
+      "ok": true,
+      "details": [
+        "html demo check ok"
+      ]
+    },
+    {
       "name": "demo_input_manifest",
       "path": "competition_artifacts/05_report_assets/demo_input_manifest.json",
       "ok": true,
@@ -71,6 +79,22 @@
       "ok": true,
       "details": [
         "required_text_present"
+      ]
+    },
+    {
+      "name": "html_demo_index",
+      "path": "competition_artifacts/06_html_demo/index.html",
+      "ok": true,
+      "details": [
+        "size_bytes=2476"
+      ]
+    },
+    {
+      "name": "html_demo_data",
+      "path": "competition_artifacts/06_html_demo/assets/demo-data.js",
+      "ok": true,
+      "details": [
+        "size_bytes=59884"
       ]
     }
   ]
