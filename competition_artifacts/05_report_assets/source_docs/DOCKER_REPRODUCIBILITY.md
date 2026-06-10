@@ -44,21 +44,36 @@ Docker smoke 不重新训练最终 50 epoch 模型，也不重新下载公开数
 
 ## 3. 当前状态
 
-本机已检测到 Docker CLI：
+本机已完成 Docker smoke 验证。
 
 ```text
 Docker version 29.3.1
+Image: xa202608:submission
+Image ID: 8d983de15d5d
+Image size: 5.62GB
 ```
 
-但当前 Docker Desktop/Linux daemon 未启动，`docker info` 报错：
+已执行：
+
+```bash
+docker build -t xa202608:submission .
+docker run --rm xa202608:submission
+```
+
+容器内验证结果：
 
 ```text
-failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine
+project check ok
+demo input check ok: 15 manifest entries
+html demo check ok
+OK docker_reproducibility: required_text_present
+Ran 36 tests in 3.447s
+OK
+Docker smoke checks passed.
 ```
 
-因此本轮已完成 Docker 文件和 smoke 入口加固，但尚未完成实际 `docker build` / `docker run` 验证。启动 Docker daemon 后，应优先执行第 1 节命令，并把日志保存到：
+完整日志保存于：
 
 ```text
 competition_artifacts/05_report_assets/docker_smoke_log.txt
 ```
-

@@ -1103,6 +1103,10 @@ def copy_final_evidence() -> None:
                 shutil.copy2(src, target_dir / name)
     for doc in DOCS_TO_COPY:
         copy_if_exists(doc, ARTIFACTS / "05_report_assets/source_docs" / Path(doc).name)
+    copy_if_exists(
+        "docs/DOCKER_SMOKE_LOG.txt",
+        ARTIFACTS / "05_report_assets/docker_smoke_log.txt",
+    )
     if IMAGE2_SOURCE.exists():
         image2_target = ARTIFACTS / "04_figures/image2_generated"
         image2_target.mkdir(parents=True, exist_ok=True)

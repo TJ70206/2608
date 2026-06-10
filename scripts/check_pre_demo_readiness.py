@@ -105,7 +105,8 @@ CHECKS: list[dict[str, Any]] = [
         "required_text": [
             "docker build",
             "scripts/run_docker_smoke.sh",
-            "Docker daemon",
+            "docker run",
+            "Docker smoke checks passed",
         ],
     },
 ]
