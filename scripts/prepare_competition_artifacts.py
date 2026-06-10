@@ -614,6 +614,7 @@ DOCS_TO_COPY = [
     "docs/SECOND_TRANSFER_BASELINE_OPTIMIZATION_UPDATE.md",
     "docs/TC_CALIBRATION_ABLATION.md",
     "docs/PRE_DEMO_SUBMISSION_HARDENING.md",
+    "docs/PRE_DEMO_BOUNDARY_AUDIT.md",
 ]
 
 IMAGE2_SOURCE = ROOT.parent / "提交初版" / "image-2 codex" / "selected"
@@ -789,7 +790,7 @@ def write_csv(path: Path, rows: list[dict[str, Any]]) -> None:
         writer.writerows(rows)
 
 
-def write_markdown_table(path: Path, title: str, rows: list[dict[str, Any]]) -> None:
+def build_markdown_table(title: str, rows: list[dict[str, Any]]) -> str:
     cols = [
         "task",
         "group",
@@ -841,7 +842,13 @@ def write_markdown_table(path: Path, title: str, rows: list[dict[str, Any]]) -> 
     ]
     for row in rows:
         lines.append("| " + " | ".join(display_cell(col, row.get(col, "")) for col in cols) + " |")
-    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return "\n".join(lines) + "\n"
+
+
+def write_markdown_table(path: Path, title: str, rows: list[dict[str, Any]]) -> str:
+    markdown = build_markdown_table(title, rows)
+    path.write_text(markdown, encoding="utf-8")
+    return markdown
 
 
 def copy_if_exists(src_rel: str, dst: Path) -> None:
@@ -1146,6 +1153,7 @@ def apply_nature_style() -> None:
                 "Liberation Sans",
             ],
             "svg.fonttype": "none",
+            "svg.hashsalt": "xa202608",
             "pdf.fonttype": 42,
             "font.size": 7,
             "axes.spines.right": False,
@@ -1162,9 +1170,12 @@ def apply_nature_style() -> None:
 
 def save_figure(fig: plt.Figure, stem: str) -> None:
     out = ARTIFACTS / "04_figures" / stem
+    svg_path = Path(f"{out}.svg")
     fig.savefig(f"{out}.png", dpi=450, bbox_inches="tight")
-    fig.savefig(f"{out}.svg", bbox_inches="tight")
-    fig.savefig(f"{out}.pdf", bbox_inches="tight")
+    fig.savefig(svg_path, bbox_inches="tight", metadata={"Date": "2026-06-10T00:00:00"})
+    fig.savefig(f"{out}.pdf", bbox_inches="tight", metadata={"CreationDate": None, "ModDate": None})
+    text = svg_path.read_text(encoding="utf-8")
+    svg_path.write_text("\n".join(line.rstrip() for line in text.splitlines()) + "\n", encoding="utf-8")
 
 
 def panel_label(ax: plt.Axes, label: str) -> None:
@@ -2811,6 +2822,7 @@ def write_subfolder_readmes() -> None:
             "- 数据集设计：`REACTION_WHEEL_SIM_DATASET_DESIGN_REVIEW.md`、`SATELLITE_BATTERY_SIM_DATASET_DESIGN_REVIEW.md`。",
             "- 方法创新与最终结果：`METHOD_NOVELTY_FRONTIER_RESEARCH_REVIEW.md`、`PG_STDA_SAC_FINAL_CROSS_TRANSFER_RESULTS.md`、`SECOND_TRANSFER_PG_STDA_INNOVATION_RESULTS.md`、`TC_CALIBRATION_ABLATION.md`。",
             "- 基线与优化更新：`FIRST_TRANSFER_BASELINE_GRID_UPDATE.md`、`SECOND_TRANSFER_BASELINE_OPTIMIZATION_UPDATE.md`。",
+            "- 提交前边界：`PRE_DEMO_SUBMISSION_HARDENING.md`、`PRE_DEMO_BOUNDARY_AUDIT.md`。",
         ],
         "99_cleanup/README.md": [
             "# 清理记录",
@@ -2835,11 +2847,12 @@ def main() -> None:
 
     all_rows = rows + ablation_rows + sensitivity_rows
     write_csv(ARTIFACTS / "03_results/metrics_master.csv", all_rows)
-    write_markdown_table(
+    strict_markdown = write_markdown_table(
         ARTIFACTS / "03_results/strict_unsupervised_comparison.md",
         "Strict Unsupervised Transfer Comparison",
         raw_transfer_comparison_rows(rows),
     )
+    (ROOT / "docs/STRICT_UNSUPERVISED_TRANSFER_COMPARISON.md").write_text(strict_markdown, encoding="utf-8")
     write_markdown_table(
         ARTIFACTS / "03_results/supervised_reference_comparison.md",
         "Supervised Reference Comparison",

@@ -56,6 +56,17 @@ Metrics rows: 81; TC ablation rows: 8; missing: 0
 - 第二迁移最终配置轻量启用 `target_sequence_monotonic_weight=0.001`；
 - 最终主贡献应集中在机理代理、伪时间阶段对齐、SAC、R-SPA 和 validation-only TC 的分层证据。
 
+### 1.4 自研 Python 仿真口径
+
+当前两个目标域应表述为“基于 Python 的机理约束航天组件遥测退化仿真引擎 / simulation testbed”生成的数据集。比赛方案要求“卫星仿真或模拟软件”和“自建航天仿真数据集”，未明确限定必须使用 STK、Simulink、AMESim 或 FreeFlyer 等商业软件。
+
+报告中应强调：
+
+- 生成器是可复现的自研模拟软件，包含配置文件、随机种子、退化机理、故障注入和数据划分；
+- 数据不是随机合成噪声，而是机理约束的航天目标域退化遥测；
+- 数据也不应被表述为真实在轨飞行遥测或高保真整星仿真；
+- 若正式问官方，建议确认“Python 自研机理约束仿真引擎是否满足卫星仿真或模拟软件要求”。
+
 ## 2. Conformal 口径
 
 当前最终 `PG-STDA-SAC-RSPA-TC` 主结果不依赖 Conformal Prediction。
