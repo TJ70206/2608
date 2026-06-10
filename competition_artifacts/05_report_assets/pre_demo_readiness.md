@@ -16,6 +16,7 @@
 | html_demo_design_spec | 通过 | `competition_artifacts/05_report_assets/source_docs/HTML_DEMO_DESIGN_SPEC.md` | required_text_present |
 | html_demo_index | 通过 | `competition_artifacts/06_html_demo/index.html` | size_bytes=2476 |
 | html_demo_data | 通过 | `competition_artifacts/06_html_demo/assets/demo-data.js` | size_bytes=59884 |
+| docker_reproducibility | 通过 | `competition_artifacts/05_report_assets/source_docs/DOCKER_REPRODUCIBILITY.md` | required_text_present |
 
 ## 边界
 

@@ -1,0 +1,19 @@
+# Docker smoke verification log
+
+Date: 2026-06-10
+
+$ docker --version
+Docker version 29.3.1, build c2be9cc
+exit_code=0
+
+$ docker context ls
+NAME              DESCRIPTION                               DOCKER ENDPOINT                             ERROR
+default           Current DOCKER_HOST based configuration   npipe:////./pipe/docker_engine              
+desktop-linux *   Docker Desktop                            npipe:////./pipe/dockerDesktopLinuxEngine
+exit_code=0
+
+$ docker info --format {{.ServerVersion}}
+failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+exit_code=1
+
+Result: docker build/run not executed because the Docker daemon is not reachable in this desktop session.

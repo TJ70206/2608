@@ -96,6 +96,14 @@
       "details": [
         "size_bytes=59884"
       ]
+    },
+    {
+      "name": "docker_reproducibility",
+      "path": "competition_artifacts/05_report_assets/source_docs/DOCKER_REPRODUCIBILITY.md",
+      "ok": true,
+      "details": [
+        "required_text_present"
+      ]
     }
   ]
 }

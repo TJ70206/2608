@@ -202,4 +202,11 @@ competition_artifacts/
 
 ## Docker 说明
 
-仓库包含基础 Docker 相关文件，后续正式提交前需要完成 build 和运行验证。当前本地主要复现路径仍以 Conda 环境 `jiebang` 为准。
+仓库包含 Dockerfile 和轻量 smoke 入口：
+
+```bash
+docker build -t xa202608:submission .
+docker run --rm xa202608:submission
+```
+
+默认容器入口为 `scripts/run_docker_smoke.sh`，会检查项目 import、demo 输入、HTML demo、pre-demo readiness 和单元测试。当前 Docker 复现边界见 `docs/DOCKER_REPRODUCIBILITY.md`。

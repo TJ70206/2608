@@ -617,6 +617,7 @@ DOCS_TO_COPY = [
     "docs/PRE_DEMO_SUBMISSION_HARDENING.md",
     "docs/PRE_DEMO_BOUNDARY_AUDIT.md",
     "docs/HTML_DEMO_DESIGN_SPEC.md",
+    "docs/DOCKER_REPRODUCIBILITY.md",
 ]
 
 IMAGE2_SOURCE = ROOT.parent / "提交初版" / "image-2 codex" / "selected"
@@ -3119,6 +3120,7 @@ def write_subfolder_readmes() -> None:
             "- 基线与优化更新：`FIRST_TRANSFER_BASELINE_GRID_UPDATE.md`、`SECOND_TRANSFER_BASELINE_OPTIMIZATION_UPDATE.md`。",
             "- 提交前边界：`PRE_DEMO_SUBMISSION_HARDENING.md`、`PRE_DEMO_BOUNDARY_AUDIT.md`。",
             "- 动态 HTML demo 设计：`HTML_DEMO_DESIGN_SPEC.md`。",
+            "- Docker 复现说明：`DOCKER_REPRODUCIBILITY.md`。",
         ],
         "99_cleanup/README.md": [
             "# 清理记录",

@@ -98,6 +98,16 @@ CHECKS: list[dict[str, Any]] = [
         "kind": "file",
         "min_bytes": 1000,
     },
+    {
+        "name": "docker_reproducibility",
+        "path": "competition_artifacts/05_report_assets/source_docs/DOCKER_REPRODUCIBILITY.md",
+        "kind": "contains",
+        "required_text": [
+            "docker build",
+            "scripts/run_docker_smoke.sh",
+            "Docker daemon",
+        ],
+    },
 ]
 
 
