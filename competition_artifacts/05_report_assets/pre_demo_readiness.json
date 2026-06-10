@@ -1,0 +1,77 @@
+{
+  "ok": true,
+  "results": [
+    {
+      "name": "check_demo_inputs",
+      "path": "scripts/check_demo_inputs.py",
+      "ok": true,
+      "details": [
+        "demo input check ok: 15 manifest entries"
+      ]
+    },
+    {
+      "name": "demo_input_manifest",
+      "path": "competition_artifacts/05_report_assets/demo_input_manifest.json",
+      "ok": true,
+      "details": [
+        "size_bytes=5674"
+      ]
+    },
+    {
+      "name": "demo_payload",
+      "path": "competition_artifacts/05_report_assets/demo_payload.json",
+      "ok": true,
+      "details": [
+        "size_bytes=59850"
+      ]
+    },
+    {
+      "name": "strict_raw_comparison",
+      "path": "competition_artifacts/03_results/strict_unsupervised_comparison.md",
+      "ok": true,
+      "details": [
+        "required_text_present"
+      ]
+    },
+    {
+      "name": "tc_ablation_boundary",
+      "path": "competition_artifacts/03_results/tc_ablation/tc_ablation_summary.md",
+      "ok": true,
+      "details": [
+        "required_text_present"
+      ]
+    },
+    {
+      "name": "final_recommendation_boundary",
+      "path": "competition_artifacts/03_results/final_recommendation.md",
+      "ok": true,
+      "details": [
+        "required_text_present"
+      ]
+    },
+    {
+      "name": "pre_demo_boundary_audit",
+      "path": "competition_artifacts/05_report_assets/source_docs/PRE_DEMO_BOUNDARY_AUDIT.md",
+      "ok": true,
+      "details": [
+        "required_text_present"
+      ]
+    },
+    {
+      "name": "pre_demo_hardening",
+      "path": "competition_artifacts/05_report_assets/source_docs/PRE_DEMO_SUBMISSION_HARDENING.md",
+      "ok": true,
+      "details": [
+        "required_text_present"
+      ]
+    },
+    {
+      "name": "html_demo_design_spec",
+      "path": "competition_artifacts/05_report_assets/source_docs/HTML_DEMO_DESIGN_SPEC.md",
+      "ok": true,
+      "details": [
+        "required_text_present"
+      ]
+    }
+  ]
+}

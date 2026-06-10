@@ -10,6 +10,7 @@ import csv
 import json
 import math
 import shutil
+import subprocess
 import sys
 import textwrap
 from dataclasses import dataclass
@@ -615,6 +616,7 @@ DOCS_TO_COPY = [
     "docs/TC_CALIBRATION_ABLATION.md",
     "docs/PRE_DEMO_SUBMISSION_HARDENING.md",
     "docs/PRE_DEMO_BOUNDARY_AUDIT.md",
+    "docs/HTML_DEMO_DESIGN_SPEC.md",
 ]
 
 IMAGE2_SOURCE = ROOT.parent / "提交初版" / "image-2 codex" / "selected"
@@ -2615,6 +2617,7 @@ def write_artifact_readme() -> None:
         "- `04_figures` 下每张主图均同时保留 PNG、SVG、PDF，便于报告排版和后续编辑。",
         "- `05_report_assets/demo_payload.json` 是后续 dashboard/demo 的推荐主入口，包含指标卡、代表性预测曲线和 TC 消融。",
         "- `05_report_assets/demo_input_manifest.json` 与 `demo_input_manifest.md` 锁定后续 dashboard/demo 的只读输入契约。",
+        "- `05_report_assets/pre_demo_readiness.md` 与 `pre_demo_readiness.json` 记录 Docker 和动态 demo 前的总就绪检查。",
     ]
     (ARTIFACTS / "README.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -3091,6 +3094,7 @@ def write_subfolder_readmes() -> None:
             "- `demo_payload.json`：后续动态 demo 的推荐主入口，包含指标、代表性曲线、TC 消融和边界说明。",
             "- `demo_input_manifest.json`：后续动态 demo 的机器可读只读输入契约。",
             "- `demo_input_manifest.md`：后续动态 demo 的人工可读输入清单。",
+            "- `pre_demo_readiness.md`：Docker 和动态 demo 前的总就绪检查报告。",
             "- 这些文档用于支撑数据集设计、方法创新性、实验边界和最终结果解释。",
         ],
         "05_report_assets/source_docs/README.md": [
@@ -3102,6 +3106,7 @@ def write_subfolder_readmes() -> None:
             "- 方法创新与最终结果：`METHOD_NOVELTY_FRONTIER_RESEARCH_REVIEW.md`、`PG_STDA_SAC_FINAL_CROSS_TRANSFER_RESULTS.md`、`SECOND_TRANSFER_PG_STDA_INNOVATION_RESULTS.md`、`TC_CALIBRATION_ABLATION.md`。",
             "- 基线与优化更新：`FIRST_TRANSFER_BASELINE_GRID_UPDATE.md`、`SECOND_TRANSFER_BASELINE_OPTIMIZATION_UPDATE.md`。",
             "- 提交前边界：`PRE_DEMO_SUBMISSION_HARDENING.md`、`PRE_DEMO_BOUNDARY_AUDIT.md`。",
+            "- 动态 HTML demo 设计：`HTML_DEMO_DESIGN_SPEC.md`。",
         ],
         "99_cleanup/README.md": [
             "# 清理记录",
@@ -3175,6 +3180,18 @@ def main() -> None:
     missing = [r for r in all_rows if not r["exists"]]
     if missing:
         write_markdown_table(ARTIFACTS / "99_cleanup/missing_metrics.md", "Missing Metrics", missing)
+
+    readiness = subprocess.run(
+        [sys.executable, "scripts/check_pre_demo_readiness.py"],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    if readiness.returncode != 0:
+        print(readiness.stdout)
+        print(readiness.stderr, file=sys.stderr)
+        raise RuntimeError("pre-demo readiness check failed")
 
     print(f"Wrote artifacts to {ARTIFACTS}")
     print(f"Metrics rows: {len(all_rows)}; TC ablation rows: {len(tc_rows)}; missing: {len(missing)}")
