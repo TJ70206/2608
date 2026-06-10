@@ -1,0 +1,175 @@
+{
+  "paper_b1": {
+    "HIWSAN": {
+      "mae": 0.1382,
+      "rmse": 0.1725,
+      "score": 0.3887
+    },
+    "GSAN": {
+      "mae": 0.1595,
+      "rmse": 0.2012,
+      "score": 0.3498
+    },
+    "DSAN-WM": {
+      "mae": 0.1763,
+      "rmse": 0.2211,
+      "score": 0.329
+    }
+  },
+  "ours": [
+    {
+      "label": "baseline_w32_lmmd05_50e",
+      "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_fast",
+      "epochs": 50,
+      "mae": 0.18243355995952382,
+      "rmse": 0.24211741964491024,
+      "score": 0.29775922214009803,
+      "clip_mae": 0.18135880688015873,
+      "clip_rmse": 0.24184420508389773,
+      "clip_score": 0.2986682547631469,
+      "coverage": 0.8650793650793651,
+      "width": 0.7898687124252319,
+      "params": 230489.0
+    },
+    {
+      "label": "w32_lmmd0_50e",
+      "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_w32_lmmd0_50e",
+      "epochs": 50,
+      "mae": 0.1882612508547619,
+      "rmse": 0.23230587414601586,
+      "score": 0.2998404781103064,
+      "clip_mae": 0.18782237818809522,
+      "clip_rmse": 0.23223587344622118,
+      "clip_score": 0.3000884937467959,
+      "coverage": 0.9206349206349206,
+      "width": 0.8073204159736633,
+      "params": 230489.0
+    },
+    {
+      "label": "w32_lmmd005_50e",
+      "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_w32_lmmd005_50e",
+      "epochs": 50,
+      "mae": 0.17875684856904764,
+      "rmse": 0.22463895218776403,
+      "score": 0.24123380246386153,
+      "clip_mae": 0.17843853339444446,
+      "clip_rmse": 0.22459721409420424,
+      "clip_score": 0.24148181810035102,
+      "coverage": 0.8968253968253969,
+      "width": 0.8135520219802856,
+      "params": 230489.0
+    },
+    {
+      "label": "w32_lmmd02_50e",
+      "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_w32_lmmd02_50e",
+      "epochs": 50,
+      "mae": 0.18708087625952377,
+      "rmse": 0.24186417317938855,
+      "score": 0.256670584565544,
+      "clip_mae": 0.18708087625952377,
+      "clip_rmse": 0.24186417317938855,
+      "clip_score": 0.256670584565544,
+      "coverage": 0.8571428571428571,
+      "width": 0.7585291266441345,
+      "params": 230489.0
+    },
+    {
+      "label": "w24_lmmd005_50e",
+      "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_w24_lmmd005_50e",
+      "epochs": 50,
+      "mae": 0.17779112837265626,
+      "rmse": 0.21546450465113345,
+      "score": 0.2540363138171281,
+      "clip_mae": 0.17779112837265626,
+      "clip_rmse": 0.21546450465113345,
+      "clip_score": 0.2540363138171281,
+      "coverage": 0.9375,
+      "width": 0.8365978002548218,
+      "params": 230489.0
+    },
+    {
+      "label": "w48_lmmd005_50e",
+      "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_w48_lmmd005_50e",
+      "epochs": 50,
+      "mae": 0.22168567788278695,
+      "rmse": 0.2777245959325789,
+      "score": 0.2332792720129761,
+      "clip_mae": 0.22133928345655743,
+      "clip_rmse": 0.2776865163140547,
+      "clip_score": 0.2335354193096784,
+      "coverage": 0.8688524590163934,
+      "width": 0.9614145755767822,
+      "params": 230489.0
+    },
+    {
+      "label": "h32_w32_lmmd005_50e",
+      "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_h32_w32_lmmd005_50e",
+      "epochs": 50,
+      "mae": 0.1721959240769841,
+      "rmse": 0.22071317822588613,
+      "score": 0.35010986789272464,
+      "clip_mae": 0.1721959240769841,
+      "clip_rmse": 0.22071317822588613,
+      "clip_score": 0.35010986789272464,
+      "coverage": 0.9047619047619048,
+      "width": 0.7795907258987427,
+      "params": 58417.0
+    },
+    {
+      "label": "ptcn_w32_lmmd005_50e",
+      "run": "xjtu_sy_paper9_b1_ptcn_transfer_w32_lmmd005_50e",
+      "epochs": 50,
+      "mae": 0.18305179756904763,
+      "rmse": 0.20704611379738122,
+      "score": 0.29068252986840704,
+      "clip_mae": 0.18271746837301586,
+      "clip_rmse": 0.20669878643492287,
+      "clip_score": 0.29082420575096235,
+      "coverage": 1.0,
+      "width": 0.7947416603565216,
+      "params": 128705.0
+    }
+  ],
+  "best_rmse": {
+    "label": "ptcn_w32_lmmd005_50e",
+    "run": "xjtu_sy_paper9_b1_ptcn_transfer_w32_lmmd005_50e",
+    "epochs": 50,
+    "mae": 0.18305179756904763,
+    "rmse": 0.20704611379738122,
+    "score": 0.29068252986840704,
+    "clip_mae": 0.18271746837301586,
+    "clip_rmse": 0.20669878643492287,
+    "clip_score": 0.29082420575096235,
+    "coverage": 1.0,
+    "width": 0.7947416603565216,
+    "params": 128705.0
+  },
+  "best_mae": {
+    "label": "h32_w32_lmmd005_50e",
+    "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_h32_w32_lmmd005_50e",
+    "epochs": 50,
+    "mae": 0.1721959240769841,
+    "rmse": 0.22071317822588613,
+    "score": 0.35010986789272464,
+    "clip_mae": 0.1721959240769841,
+    "clip_rmse": 0.22071317822588613,
+    "clip_score": 0.35010986789272464,
+    "coverage": 0.9047619047619048,
+    "width": 0.7795907258987427,
+    "params": 58417.0
+  },
+  "best_score": {
+    "label": "h32_w32_lmmd005_50e",
+    "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_h32_w32_lmmd005_50e",
+    "epochs": 50,
+    "mae": 0.1721959240769841,
+    "rmse": 0.22071317822588613,
+    "score": 0.35010986789272464,
+    "clip_mae": 0.1721959240769841,
+    "clip_rmse": 0.22071317822588613,
+    "clip_score": 0.35010986789272464,
+    "coverage": 0.9047619047619048,
+    "width": 0.7795907258987427,
+    "params": 58417.0
+  }
+}

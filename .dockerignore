@@ -1,0 +1,10 @@
+outputs/
+data/raw/
+data/processed/
+data/simulated/
+__pycache__/
+*.pyc
+.venv/
+.git/
+*.pt
+*.pth

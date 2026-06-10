@@ -1,0 +1,46 @@
+{
+  "task": "B1",
+  "paper_hiwsan": {
+    "mae": 0.1382,
+    "rmse": 0.1725,
+    "score": 0.3887
+  },
+  "ours_psa_mcd_transfer_fast": {
+    "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_fast",
+    "config": "configs/xjtu_sy_paper9_b1_psa_mcd_transfer_fast.yaml",
+    "mae": 0.18243355995952382,
+    "rmse": 0.24211741964491024,
+    "paper9_score": 0.2977592219035731,
+    "mae_clipped_0_1": 0.18135880688015873,
+    "rmse_clipped_0_1": 0.24184420508389773,
+    "paper9_score_clipped_0_1": 0.2986682547631469,
+    "num_test_windows": 126,
+    "epochs": 50,
+    "final_metrics": {
+      "rmse": 0.24211741971295472,
+      "mae": 0.18243355853741783,
+      "nasa_score": 1.8281243370391604,
+      "ra": 0.6042606209204465,
+      "alpha_lambda_0.5": 0.5384615384615384,
+      "alpha_lambda_0.8": 0.46153846153846156,
+      "last_window_rmse": 0.0032937449868768454,
+      "last_window_mae": 0.0032937449868768454,
+      "last_window_nasa_score": 0.00025339709861271764,
+      "last_window_ra": 0.0,
+      "last_window_num_units": 1.0,
+      "last_5_avg_rmse": 0.012793937092646956,
+      "last_5_avg_mae": 0.012793937092646956,
+      "last_5_avg_nasa_score": 0.0009846334406660162,
+      "last_5_avg_ra": 0.0,
+      "last_5_avg_num_units": 1.0,
+      "last_5_avg_mean_windows": 5.0,
+      "ph_mean": 0.0,
+      "conformal_coverage": 0.8650793650793651,
+      "conformal_avg_width": 0.7898687124252319,
+      "conformal_q": 0.39493435621261597,
+      "num_parameters": 230489.0,
+      "latency_ms_per_batch": 9.624250007618684,
+      "latency_ms_per_sample": 0.31045967766511884
+    }
+  }
+}

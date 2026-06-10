@@ -1,0 +1,51 @@
+experiment:
+  name: xjtu_sy_paper9_b1_psa_mcd_transfer_w32_lmmd005_50e
+  seed: 42
+  output_dir: outputs/xjtu_sy_paper9_b1_psa_mcd_transfer_w32_lmmd005_50e
+data:
+  dataset: xjtu_sy_transfer
+  processed_path: data/processed/xjtu_sy_hi.npz
+  paper_task: B1
+  source_units:
+  - Bearing1_1
+  target_train_units:
+  - Bearing2_1
+  target_val_units:
+  - Bearing2_1
+  target_test_units:
+  - Bearing2_3
+  window_size: 32
+  stride: 4
+  max_rul: null
+model:
+  name: p_sa_mcd_tcn
+  input_channels: 14
+  hidden_channels: 64
+  kernel_size: 3
+  dilations:
+  - 1
+  - 2
+  - 4
+  - 8
+  - 16
+  dropout: 0.1
+  output_dim: 1
+  attention_heads: 4
+  use_temporal_attention: true
+  use_channel_attention: true
+  use_temporal_descriptors: true
+  use_stage_head: true
+  num_stages: 3
+train:
+  epochs: 50
+  batch_size: 32
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  device: auto
+transfer:
+  lmmd_weight: 0.005
+  num_stages: 3
+conformal:
+  enabled: true
+  alpha: 0.1

@@ -1,0 +1,70 @@
+experiment:
+  name: nasa_to_satellite_battery_lstm_finetune_pretrain10_50e
+  seed: 202608
+  output_dir: outputs/second_transfer_50e/nasa_to_satellite_battery_lstm_finetune_pretrain10_50e
+
+data:
+  dataset: nasa_to_satellite_battery
+  source_csv_path: data/processed/nasa_battery.csv
+  target_csv_path: data/simulated/satellite_battery/satellite_battery_sim.csv
+  source_feature_columns:
+    - voltage
+    - current
+    - temperature
+  target_feature_columns:
+    - voltage
+    - current
+    - temperature
+  target_feature_protocol: telemetry_only
+  source_current_multiplier: -1.0
+  source_target_column: normalized_rul
+  target_column: normalized_rul
+  target_train_split: train
+  target_val_split: val
+  target_test_split: test
+  window_size: 32
+  source_window_size: 32
+  target_window_size: 32
+  source_stride: 1
+  target_stride: 96
+  max_rul: null
+  normalize: zscore
+  normalizer_scope: target_train
+
+model:
+  name: lstm
+  input_channels: 3
+  hidden_channels: 64
+  num_layers: 2
+  dropout: 0.15
+  output_dim: 1
+  bidirectional: false
+  pooling: last
+  head_hidden_dims: [32]
+
+train:
+  epochs: 50
+  batch_size: 64
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  checkpoint_metric: target_val_rmse
+  checkpoint_mode: min
+  device: auto
+
+transfer:
+  alignment: none
+  lmmd_weight: 0.0
+  num_stages: 3
+  source_pretrain_epochs: 10
+  source_supervised_weight: 0.0
+  target_supervised_weight: 1.0
+  epoch_steps: target
+
+metrics:
+  alpha: 0.2
+  lambdas: [0.5, 0.8]
+
+conformal:
+  enabled: false
+  alpha: 0.1

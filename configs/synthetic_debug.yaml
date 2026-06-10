@@ -1,0 +1,44 @@
+experiment:
+  name: synthetic_debug_ptcn
+  seed: 42
+  output_dir: outputs/synthetic_debug
+
+data:
+  dataset: synthetic_debug
+  num_units: 80
+  min_length: 90
+  max_length: 160
+  num_features: 8
+  window_size: 32
+  stride: 1
+  max_rul: 125
+  train_ratio: 0.7
+  val_ratio: 0.15
+  test_ratio: 0.15
+  normalize: zscore
+
+model:
+  name: p_tcn
+  input_channels: 8
+  hidden_channels: 64
+  num_blocks: 5
+  kernel_size: 3
+  dilations: [1, 2, 4, 8, 16]
+  dropout: 0.1
+  output_dim: 1
+
+train:
+  epochs: 5
+  batch_size: 64
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  device: auto
+
+metrics:
+  alpha: 0.2
+  lambdas: [0.5, 0.8]
+
+conformal:
+  enabled: true
+  alpha: 0.1

@@ -1,0 +1,52 @@
+experiment:
+  name: sim_reaction_wheel
+  seed: 202608
+
+data:
+  dataset: reaction_wheel
+  output_dir: data/simulated/reaction_wheel
+  num_units: 100
+  min_length: 600
+  max_length: 1600
+  time_step_seconds: 60
+  split_seed: 202608
+  split_ratios:
+    train: 0.60
+    val: 0.15
+    calib: 0.10
+    test: 0.15
+
+  kt0_mean: 0.029
+  kt0_std: 0.0012
+  kt_threshold_ratio: 0.30
+  target_eol_min_fraction: 0.78
+  target_eol_max_fraction: 0.94
+
+  coulomb_friction: 0.002
+  viscous_coeff: 0.000005
+  omega_stribeck: 0.42
+  inertia: 0.0077
+  drive_gain: 0.19
+  speed_limit_rad_s: 680
+  periodic_disturbance_amplitude: 0.0004
+  friction_threshold_multiplier: 6.0
+
+  lubricant_threshold: 0.08
+  temperature_reference_kelvin: 296.15
+  explicit_fault_fraction: 0.25
+
+  command_response: 0.10
+  current_response: 0.22
+  dynamics_dt: 0.018
+
+  noise_scale: 0.01
+  missing_rate: 0.05
+  missing_burst_rate: 0.004
+  post_eol_padding: 0
+
+  feature_protocol: telemetry_only
+  target_column: rul
+  window_size: 32
+  stride: 4
+  max_rul: null
+  normalize: zscore

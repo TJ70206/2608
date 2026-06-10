@@ -1,0 +1,98 @@
+experiment:
+  name: cmapss_fd002_psa_mcd_paper4_fullseq_tail5_condnorm_piecewise_score_capped_99e
+  seed: 42
+  output_dir: outputs/cmapss_fd002_psa_mcd_paper4_fullseq_tail5_condnorm_piecewise_score_capped_99e
+data:
+  dataset: cmapss
+  root_dir: data/raw/cmapss
+  subset: FD002
+  training_mode: full_sequence_random_trim
+  window_size: 30
+  min_length: 30
+  random_end_trim: true
+  trim_min: 0
+  trim_max: 75
+  max_rul: 125
+  test_max_rul: 125
+  val_ratio: 0.15
+  normalize: condition_zscore
+  val_random_end_trim: true
+  val_trim_min: 1
+  val_trim_max: 160
+  val_num_trims: 5
+  val_pad_short: true
+  test_pad_short: true
+  drop_features:
+  - s_1
+  - s_5
+  - s_6
+  - s_10
+  - s_16
+  - s_18
+  - s_19
+  split_seed: 42
+  val_trim_seed: 1042
+  num_conditions: 6
+  condition_seed: 42
+model:
+  name: p_sa_mcd_tcn
+  input_channels: 17
+  hidden_channels: 32
+  kernel_size: 3
+  dilations:
+  - 1
+  - 2
+  - 4
+  - 8
+  - 16
+  - 30
+  dropout: 0.1
+  output_dim: 1
+  attention_heads: 4
+  use_temporal_attention: true
+  use_channel_attention: true
+  use_temporal_descriptors: true
+  use_stage_head: true
+  num_stages: 3
+train:
+  epochs: 99
+  batch_size: 8
+  optimizer: adam
+  loss: smooth_l1
+  learning_rate: 0.001
+  weight_decay: 0.0
+  grad_clip_norm: 1.0
+  stage_loss_weight: 0.0
+  sequence_tail_weight: 5.0
+  sequence_tail_k: 5
+  late_stage_weight: 1.0
+  late_prediction_weight: 1.0
+  checkpoint_metric: last_window_rmse
+  checkpoint_mode: min
+  checkpoint_min_epoch: 10
+  early_stopping_patience: 40
+  early_stopping_min_delta: 0.0
+  device: auto
+metrics:
+  alpha: 0.2
+  lambdas:
+  - 0.5
+  - 0.8
+conformal:
+  enabled: true
+  alpha: 0.1
+evaluation:
+  clip_predictions: true
+  clip_min: 0.0
+  clip_max: 125.0
+  calibrate_piecewise: true
+  piecewise:
+    edges:
+    - 0
+    - 30
+    - 60
+    - 90
+    - 125
+    - 200
+    shrink: 0.75
+  calibrate_bias: false

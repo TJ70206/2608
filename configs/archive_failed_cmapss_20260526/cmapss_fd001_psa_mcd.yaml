@@ -1,0 +1,47 @@
+experiment:
+  name: cmapss_fd001_psa_mcd
+  seed: 42
+  output_dir: outputs/cmapss_fd001_psa_mcd
+
+data:
+  dataset: cmapss
+  root_dir: data/raw/cmapss
+  subset: FD001
+  window_size: 30
+  stride: 1
+  max_rul: 125
+  val_ratio: 0.15
+  normalize: zscore
+  drop_features:
+    - s_1
+    - s_5
+    - s_6
+    - s_10
+    - s_16
+    - s_18
+    - s_19
+
+model:
+  name: p_sa_mcd_tcn
+  input_channels: 17
+  hidden_channels: 64
+  kernel_size: 3
+  dilations: [1, 2, 4, 8, 16]
+  dropout: 0.1
+  output_dim: 1
+
+train:
+  epochs: 30
+  batch_size: 128
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  device: auto
+
+metrics:
+  alpha: 0.2
+  lambdas: [0.5, 0.8]
+
+conformal:
+  enabled: true
+  alpha: 0.1

@@ -1,0 +1,138 @@
+{
+  "paper_b1": {
+    "HIWSAN": {
+      "mae": 0.1382,
+      "rmse": 0.1725,
+      "score": 0.3887
+    },
+    "GSAN": {
+      "mae": 0.1595,
+      "rmse": 0.2012,
+      "score": 0.3498
+    },
+    "DSAN-WM": {
+      "mae": 0.1763,
+      "rmse": 0.2211,
+      "score": 0.329
+    }
+  },
+  "ours": [
+    {
+      "label": "baseline_w32_50e",
+      "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_fast",
+      "epochs": 50,
+      "mae": 0.18243355995952382,
+      "rmse": 0.24211741964491024,
+      "score": 0.2977592219035731,
+      "mae_clip": 0.18135880688015873,
+      "rmse_clip": 0.24184420508389773,
+      "score_clip": 0.2986682547631469,
+      "coverage": 0.8650793650793651,
+      "width": 0.7898687124252319
+    },
+    {
+      "label": "w16_lmmd001_150e",
+      "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_w16_lmmd001_150e",
+      "epochs": 150,
+      "mae": 0.21439746642623075,
+      "rmse": 0.27592077476796273,
+      "score": 0.2288344932888869,
+      "mae_clip": 0.21356493981084615,
+      "rmse_clip": 0.2755438171497852,
+      "score_clip": 0.22939025439334176,
+      "coverage": 0.8153846153846154,
+      "width": 0.7960968017578125
+    },
+    {
+      "label": "w16_lmmd01_150e",
+      "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_w16_lmmd01_150e",
+      "epochs": 150,
+      "mae": 0.28359037539923077,
+      "rmse": 0.3431669658871058,
+      "score": 0.16381696054369485,
+      "mae_clip": 0.2476386999453846,
+      "rmse_clip": 0.319466076929817,
+      "score_clip": 0.16897604379451892,
+      "coverage": 0.7230769230769231,
+      "width": 0.7905184030532837
+    },
+    {
+      "label": "w64_lmmd005_150e",
+      "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_w64_lmmd005_150e",
+      "epochs": 150,
+      "mae": 0.20860281990932203,
+      "rmse": 0.2695229379519477,
+      "score": 0.2234278471243233,
+      "mae_clip": 0.20680379088559322,
+      "rmse_clip": 0.2686182367941891,
+      "score_clip": 0.22460137825257565,
+      "coverage": 0.8728813559322034,
+      "width": 1.00530606508255
+    },
+    {
+      "label": "w32_lmmd001_lr5e4_150e",
+      "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_w32_lmmd001_lr5e4_150e",
+      "epochs": 150,
+      "mae": 0.20712627199285713,
+      "rmse": 0.26184015094716795,
+      "score": 0.20743172737536766,
+      "mae_clip": 0.20501580853253967,
+      "rmse_clip": 0.2608146113702981,
+      "score_clip": 0.20916213836211114,
+      "coverage": 0.8492063492063492,
+      "width": 0.7893198132514954
+    },
+    {
+      "label": "h96_w32_lmmd005_150e",
+      "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_h96_w32_lmmd005_150e",
+      "epochs": 150,
+      "mae": 0.23247033036746034,
+      "rmse": 0.2920384043497079,
+      "score": 0.2220839893636775,
+      "mae_clip": 0.21195117411349207,
+      "rmse_clip": 0.2821464914534439,
+      "score_clip": 0.22721924265182625,
+      "coverage": 0.8015873015873016,
+      "width": 0.7535183429718018
+    }
+  ],
+  "best_rmse": {
+    "label": "baseline_w32_50e",
+    "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_fast",
+    "epochs": 50,
+    "mae": 0.18243355995952382,
+    "rmse": 0.24211741964491024,
+    "score": 0.2977592219035731,
+    "mae_clip": 0.18135880688015873,
+    "rmse_clip": 0.24184420508389773,
+    "score_clip": 0.2986682547631469,
+    "coverage": 0.8650793650793651,
+    "width": 0.7898687124252319
+  },
+  "best_mae": {
+    "label": "baseline_w32_50e",
+    "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_fast",
+    "epochs": 50,
+    "mae": 0.18243355995952382,
+    "rmse": 0.24211741964491024,
+    "score": 0.2977592219035731,
+    "mae_clip": 0.18135880688015873,
+    "rmse_clip": 0.24184420508389773,
+    "score_clip": 0.2986682547631469,
+    "coverage": 0.8650793650793651,
+    "width": 0.7898687124252319
+  },
+  "best_score": {
+    "label": "baseline_w32_50e",
+    "run": "xjtu_sy_paper9_b1_psa_mcd_transfer_fast",
+    "epochs": 50,
+    "mae": 0.18243355995952382,
+    "rmse": 0.24211741964491024,
+    "score": 0.2977592219035731,
+    "mae_clip": 0.18135880688015873,
+    "rmse_clip": 0.24184420508389773,
+    "score_clip": 0.2986682547631469,
+    "coverage": 0.8650793650793651,
+    "width": 0.7898687124252319
+  }
+}

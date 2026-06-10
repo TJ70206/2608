@@ -1,0 +1,52 @@
+experiment:
+  name: satellite_battery_sim_lstm_50e
+  seed: 202608
+  output_dir: outputs/second_transfer_50e/satellite_battery_sim_lstm_50e
+
+data:
+  dataset: satellite_battery_sim
+  satellite_battery_csv_path: data/simulated/satellite_battery/satellite_battery_sim.csv
+  target_train_split: train
+  target_val_split: val
+  target_test_split: test
+  feature_protocol: telemetry_only
+  feature_columns:
+    - voltage
+    - current
+    - temperature
+  target_column: normalized_rul
+  window_size: 32
+  stride: 96
+  max_rul: null
+  normalize: zscore
+
+model:
+  name: lstm
+  input_channels: 3
+  hidden_channels: 64
+  num_layers: 2
+  dropout: 0.15
+  output_dim: 1
+  bidirectional: false
+  pooling: last
+  head_hidden_dims: [32]
+
+train:
+  epochs: 50
+  batch_size: 64
+  optimizer: adamw
+  loss: smooth_l1
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  checkpoint_metric: rmse
+  checkpoint_mode: min
+  device: auto
+
+metrics:
+  alpha: 0.2
+  lambdas: [0.5, 0.8]
+
+conformal:
+  enabled: false
+  alpha: 0.1

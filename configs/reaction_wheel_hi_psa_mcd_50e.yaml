@@ -1,0 +1,55 @@
+experiment:
+  name: reaction_wheel_hi_psa_mcd_50e
+  seed: 202608
+  output_dir: outputs/first_transfer_50e/reaction_wheel_hi_psa_mcd_50e
+
+data:
+  dataset: reaction_wheel_hi
+  reaction_wheel_csv_path: data/simulated/reaction_wheel/reaction_wheel_sim.csv
+  target_train_split: train
+  target_val_split: val
+  target_test_split: test
+  target_hi_feature_columns:
+    - motor_current
+    - vibration_proxy
+  target_hi_window_size: 16
+  target_hi_stride: 8
+  target_column: normalized_rul
+  window_size: 8
+  stride: 2
+  max_rul: null
+  normalize: zscore
+
+model:
+  name: p_sa_mcd_tcn
+  input_channels: 14
+  hidden_channels: 32
+  kernel_size: 3
+  dilations: [1, 2, 4, 8]
+  dropout: 0.15
+  output_dim: 1
+  attention_heads: 4
+  use_temporal_attention: true
+  use_channel_attention: true
+  use_temporal_descriptors: true
+  use_stage_head: true
+  num_stages: 3
+
+train:
+  epochs: 50
+  batch_size: 64
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  stage_loss_weight: 0.0
+  checkpoint_metric: rmse
+  checkpoint_mode: min
+  device: auto
+
+metrics:
+  alpha: 0.2
+  lambdas: [0.5, 0.8]
+
+conformal:
+  enabled: false
+  alpha: 0.1

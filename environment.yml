@@ -1,0 +1,17 @@
+name: jiebang
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - numpy
+  - pandas
+  - scikit-learn
+  - pyyaml
+  - tqdm
+  - matplotlib
+  - pytorch
+  - torchvision
+  - torchaudio
+  - cpuonly

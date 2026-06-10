@@ -1,0 +1,57 @@
+experiment:
+  name: sim_satellite_battery
+  seed: 202608
+
+data:
+  dataset: satellite_battery_sim
+  output_dir: data/simulated/satellite_battery
+  num_units: 100
+  min_eol_cycles: 300
+  max_eol_cycles: 1200
+  steps_per_cycle: 24
+  orbit_period_min: 90
+  sunlight_minutes: 55
+  split_seed: 202608
+  split_ratios:
+    train: 0.70
+    val: 0.15
+    test: 0.15
+
+  q_bol_mean: 2.0
+  q_bol_std: 0.04
+  r_bol_mean: 0.045
+  r_bol_std: 0.004
+  r_bol_min: 0.035
+  r_bol_max: 0.060
+  capacity_eol_ratio: 0.80
+  resistance_eol_ratio: 1.33
+
+  dod_min: 0.20
+  dod_max: 0.40
+  stress_dod_fraction: 0.08
+  stress_dod_max: 0.50
+  explicit_fault_fraction: 0.25
+  thermal_fault_fraction: 0.20
+  resistance_step_fraction: 0.30
+
+  ambient_min_c: 0.0
+  ambient_max_c: 38.0
+  voltage_noise_std: 0.006
+  current_noise_std: 0.006
+  temperature_noise_std: 0.12
+  adc_step_v: 0.001
+  soc_est_initial_std: 0.015
+  soc_est_noise_std: 0.006
+  soc_est_drift_std_per_cycle: 0.00025
+
+  thevenin_rp_ratio_min: 0.22
+  thevenin_rp_ratio_max: 0.38
+  thevenin_tau_min_s: 420
+  thevenin_tau_max_s: 780
+
+  feature_protocol: telemetry_only
+  target_column: normalized_rul
+  window_size: 32
+  stride: 24
+  max_rul: null
+  normalize: zscore

@@ -1,0 +1,103 @@
+{
+  "rows": [
+    {
+      "label": "P-TCN baseline",
+      "run": "nasa_battery_processed_ptcn",
+      "role": "baseline",
+      "rmse": 19.536686394269328,
+      "mae": 13.338232357136524,
+      "score": 735.5511383753158,
+      "last_window_rmse": 3.8047351837158203,
+      "last_window_score": 0.4629771720141498,
+      "coverage": 0.5912408759124088,
+      "avg_width": 11.895827293395996,
+      "params": 128129.0,
+      "latency_ms_per_sample": 0.38124444512909067
+    },
+    {
+      "label": "P-SA-MCD base",
+      "run": "nasa_battery_processed_psa_mcd_tcn",
+      "role": "rejected",
+      "rmse": 21.838546540113857,
+      "mae": 13.849753362418962,
+      "score": 1015.9641549218246,
+      "last_window_rmse": 0.8464012145996094,
+      "last_window_score": 0.08832533128273234,
+      "coverage": 0.6058394160583942,
+      "avg_width": 18.36493492126465,
+      "params": 58129.0,
+      "latency_ms_per_sample": 0.602666666964069
+    },
+    {
+      "label": "P-SA-MCD h64",
+      "run": "nasa_battery_processed_psa_mcd_tcn_h64",
+      "role": "previous_best",
+      "rmse": 5.177532981813549,
+      "mae": 2.9290600563705405,
+      "score": 50.758609214766956,
+      "last_window_rmse": 0.9571308493614197,
+      "last_window_score": 0.0764035629762938,
+      "coverage": 1.0,
+      "avg_width": 53.217567443847656,
+      "params": 229913.0,
+      "latency_ms_per_sample": 0.711977777730984
+    },
+    {
+      "label": "P-SA-MCD w16",
+      "run": "nasa_battery_processed_psa_mcd_tcn_w16",
+      "role": "rejected",
+      "rmse": 23.38763889999099,
+      "mae": 15.372804003992892,
+      "score": 1504.7499010310655,
+      "last_window_rmse": 1.0407555103302002,
+      "last_window_score": 0.10968428954304743,
+      "coverage": 0.5882352941176471,
+      "avg_width": 19.412158966064453,
+      "params": 58129.0,
+      "latency_ms_per_sample": 0.2262280002469197
+    },
+    {
+      "label": "P-SA-MCD h64_w48",
+      "run": "nasa_battery_processed_psa_mcd_tcn_h64_w48",
+      "role": "new_best",
+      "rmse": 2.629944413938595,
+      "mae": 1.9045000275797095,
+      "score": 20.674137015717967,
+      "last_window_rmse": 0.9120792746543884,
+      "last_window_score": 0.072679736441011,
+      "coverage": 1.0,
+      "avg_width": 24.22067642211914,
+      "params": 229913.0,
+      "latency_ms_per_sample": 0.27626140370940494
+    },
+    {
+      "label": "P-SA-MCD h96",
+      "run": "nasa_battery_processed_psa_mcd_tcn_h96",
+      "role": "rejected",
+      "rmse": 8.921211437062123,
+      "mae": 5.05834196540561,
+      "score": 116.75026101521173,
+      "last_window_rmse": 0.2594444155693054,
+      "last_window_score": 0.020157740344528552,
+      "coverage": 0.9343065693430657,
+      "avg_width": 40.840240478515625,
+      "params": 515361.0,
+      "latency_ms_per_sample": 0.7889777771197259
+    },
+    {
+      "label": "P-SA-MCD h64_reg",
+      "run": "nasa_battery_processed_psa_mcd_tcn_h64_reg",
+      "role": "rejected",
+      "rmse": 22.115383387186018,
+      "mae": 14.144915634698242,
+      "score": 1064.0081567843056,
+      "last_window_rmse": 1.3544979095458984,
+      "last_window_score": 0.14505170243817878,
+      "coverage": 0.5985401459854015,
+      "avg_width": 17.883953094482422,
+      "params": 229913.0,
+      "latency_ms_per_sample": 0.6684222219822308
+    }
+  ],
+  "main_config": "configs/nasa_battery_processed_psa_mcd_tcn_h64_w48.yaml"
+}

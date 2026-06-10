@@ -1,0 +1,7 @@
+{
+  "python": "3.10.20",
+  "platform": "Windows-10-10.0.22631-SP0",
+  "torch": "2.5.1",
+  "cuda_available": false,
+  "cuda_version": null
+}

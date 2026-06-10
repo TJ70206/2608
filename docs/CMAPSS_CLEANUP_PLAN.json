@@ -1,0 +1,43 @@
+{
+  "keep_configs": [
+    "cmapss_fd001_psa_mcd_paper4_fullseq_tail5_capped_99e.yaml",
+    "cmapss_fd002_psa_mcd_paper4_fullseq_tail5_condnorm_piecewise_capped_99e.yaml",
+    "cmapss_fd002_psa_mcd_paper4_fullseq_tail5_condnorm_piecewise_score_capped_99e.yaml",
+    "cmapss_fd002_psa_mcd_paper4_fullseq_tail5_condnorm_piecewise_score_seed2026_capped_99e.yaml",
+    "cmapss_fd003_psa_mcd_paper4_fullseq_tail15w3_latepred12_clip_capped_99e.yaml",
+    "cmapss_fd004_psa_mcd_paper4_fullseq_h64_tail5_condnorm_isotonic_capped_99e.yaml",
+    "cmapss_fd004_psa_mcd_paper4_fullseq_h64_tail5_condnorm_isotonic_seed2026_capped_99e.yaml",
+    "cmapss_fd004_psa_mcd_paper4_fullseq_h64_tail5_condnorm_piecewise_shrink075_seed2026_capped_99e.yaml"
+  ],
+  "archive_candidates": [
+    "cmapss_fd002_psa_mcd_paper4_fullseq_h64_tail5_condnorm_capped_99e.yaml",
+    "cmapss_fd002_psa_mcd_paper4_fullseq_h64_tail5_condnorm_piecewisegrid_capped_99e.yaml",
+    "cmapss_fd002_psa_mcd_paper4_fullseq_h64_tail5_condnorm_scoreckpt_biascalib_capped_99e.yaml",
+    "cmapss_fd002_psa_mcd_paper4_fullseq_tail5_capped_99e.yaml",
+    "cmapss_fd002_psa_mcd_paper4_fullseq_tail5_condnorm_biascalib_capped_99e.yaml",
+    "cmapss_fd002_psa_mcd_paper4_fullseq_tail5_condnorm_capped_99e.yaml",
+    "cmapss_fd002_psa_mcd_paper4_fullseq_tail5_condnorm_isotonic_capped_99e.yaml",
+    "cmapss_fd002_psa_mcd_paper4_fullseq_tail5_condnorm_piecewisegrid_capped_99e.yaml",
+    "cmapss_fd002_psa_mcd_paper4_fullseq_tail5_condnorm_scoreckpt_biascalib_capped_99e.yaml",
+    "cmapss_fd003_psa_mcd_paper4_fullseq_h64_tail10w5_capped_99e.yaml",
+    "cmapss_fd003_psa_mcd_paper4_fullseq_h64_tail15w3_reg_capped_99e.yaml",
+    "cmapss_fd003_psa_mcd_paper4_fullseq_tail10w5_capped_99e.yaml",
+    "cmapss_fd003_psa_mcd_paper4_fullseq_tail15w3_capped_99e.yaml",
+    "cmapss_fd003_psa_mcd_paper4_fullseq_tail15w3_clip_capped_99e.yaml",
+    "cmapss_fd003_psa_mcd_paper4_fullseq_tail15w3_latepred11_clip_capped_99e.yaml",
+    "cmapss_fd003_psa_mcd_paper4_fullseq_tail15w3_latepred12_capped_99e.yaml",
+    "cmapss_fd003_psa_mcd_paper4_fullseq_tail15w3_latepred13_clip_capped_99e.yaml",
+    "cmapss_fd003_psa_mcd_paper4_fullseq_tail15w3_scoreckpt_capped_99e.yaml",
+    "cmapss_fd003_psa_mcd_paper4_fullseq_tail5_capped_99e.yaml",
+    "cmapss_fd004_psa_mcd_paper4_fullseq_h64_tail5_condnorm_biascalib_capped_99e.yaml",
+    "cmapss_fd004_psa_mcd_paper4_fullseq_h64_tail5_condnorm_capped_99e.yaml",
+    "cmapss_fd004_psa_mcd_paper4_fullseq_h64_tail5_condnorm_piecewise_capped_99e.yaml",
+    "cmapss_fd004_psa_mcd_paper4_fullseq_h64_tail5_condnorm_piecewisegrid_capped_99e.yaml",
+    "cmapss_fd004_psa_mcd_paper4_fullseq_h64_tail5_condnorm_scoreckpt_biascalib_capped_99e.yaml",
+    "cmapss_fd004_psa_mcd_paper4_fullseq_tail5_capped_99e.yaml",
+    "cmapss_fd004_psa_mcd_paper4_fullseq_tail5_condnorm_biascalib_capped_99e.yaml",
+    "cmapss_fd004_psa_mcd_paper4_fullseq_tail5_condnorm_capped_99e.yaml"
+  ],
+  "keep_count": 8,
+  "archive_candidate_count": 27
+}

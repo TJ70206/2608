@@ -1,0 +1,46 @@
+experiment:
+  name: synthetic_transfer_fast
+  seed: 42
+  output_dir: outputs/synthetic_transfer_fast
+
+data:
+  dataset: synthetic_transfer_debug
+  num_units_source: 30
+  num_units_target: 24
+  min_length: 70
+  max_length: 110
+  num_features: 8
+  window_size: 24
+  stride: 2
+  max_rul: 100
+  train_ratio: 0.7
+  val_ratio: 0.15
+  test_ratio: 0.15
+  source_shift: 0.0
+  target_shift: 0.35
+
+model:
+  name: p_sa_mcd_tcn
+  input_channels: 8
+  hidden_channels: 32
+  num_blocks: 4
+  kernel_size: 3
+  dilations: [1, 2, 4, 8]
+  dropout: 0.1
+  output_dim: 1
+
+train:
+  epochs: 1
+  batch_size: 64
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  device: auto
+
+transfer:
+  lmmd_weight: 0.1
+  num_stages: 3
+
+conformal:
+  enabled: true
+  alpha: 0.1

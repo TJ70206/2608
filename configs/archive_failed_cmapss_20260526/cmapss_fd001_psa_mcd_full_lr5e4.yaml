@@ -1,0 +1,61 @@
+experiment:
+  name: cmapss_fd001_psa_mcd_full_lr5e4
+  seed: 42
+  output_dir: outputs/cmapss_fd001_psa_mcd_full_lr5e4
+
+data:
+  dataset: cmapss
+  root_dir: data/raw/cmapss
+  subset: FD001
+  window_size: 30
+  stride: 1
+  max_rul: 125
+  val_ratio: 0.15
+  normalize: zscore
+  drop_features:
+    - s_1
+    - s_5
+    - s_6
+    - s_10
+    - s_16
+    - s_18
+    - s_19
+
+model:
+  name: p_sa_mcd_tcn
+  input_channels: 17
+  hidden_channels: 64
+  kernel_size: 3
+  dilations: [1, 2, 4, 8, 16, 32]
+  dropout: 0.1
+  output_dim: 1
+  attention_heads: 4
+  use_temporal_attention: true
+  use_channel_attention: true
+  use_temporal_descriptors: true
+  use_stage_head: true
+  num_stages: 3
+
+train:
+  epochs: 100
+  batch_size: 64
+  learning_rate: 0.0005
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  stage_loss_weight: 0.05
+  late_stage_weight: 1.5
+  late_stage_threshold: 2
+  late_prediction_weight: 1.15
+  checkpoint_metric: rmse
+  checkpoint_mode: min
+  early_stopping_patience: 20
+  early_stopping_min_delta: 0.0
+  device: auto
+
+metrics:
+  alpha: 0.2
+  lambdas: [0.5, 0.8]
+
+conformal:
+  enabled: true
+  alpha: 0.1

@@ -1,0 +1,41 @@
+experiment:
+  name: reaction_wheel_sim_ptcn_smoke
+  seed: 202608
+  output_dir: outputs/reaction_wheel_sim_ptcn_smoke
+
+data:
+  dataset: reaction_wheel
+  csv_path: data/simulated/reaction_wheel/reaction_wheel_sim.csv
+  feature_protocol: telemetry_only
+  target_column: rul
+  window_size: 32
+  stride: 8
+  max_rul: 800
+  normalize: zscore
+
+model:
+  name: p_tcn
+  input_channels: 5
+  hidden_channels: 32
+  kernel_size: 3
+  dilations: [1, 2, 4, 8]
+  dropout: 0.1
+  output_dim: 1
+
+train:
+  epochs: 1
+  batch_size: 128
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  checkpoint_metric: rmse
+  checkpoint_mode: min
+  device: auto
+
+metrics:
+  alpha: 0.2
+  lambdas: [0.5, 0.8]
+
+conformal:
+  enabled: false
+  alpha: 0.1

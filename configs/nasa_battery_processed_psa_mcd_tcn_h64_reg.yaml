@@ -1,0 +1,60 @@
+conformal:
+  alpha: 0.1
+  enabled: true
+data:
+  csv_path: data/processed/nasa_battery.csv
+  dataset: nasa_battery
+  feature_columns:
+  - voltage
+  - current
+  - temperature
+  - capacity
+  - internal_resistance
+  max_rul: 500
+  soh_eol: 0.8
+  stride: 1
+  test_ratio: 0.25
+  train_ratio: 0.5
+  val_ratio: 0.25
+  window_size: 32
+experiment:
+  name: nasa_battery_processed_psa_mcd_tcn_h64_reg
+  output_dir: outputs/nasa_battery_processed_psa_mcd_tcn_h64_reg
+  seed: 42
+metrics:
+  alpha: 0.2
+  lambdas:
+  - 0.5
+  - 0.8
+model:
+  attention_heads: 4
+  dilations:
+  - 1
+  - 2
+  - 4
+  - 8
+  - 16
+  dropout: 0.25
+  hidden_channels: 64
+  input_channels: 5
+  kernel_size: 3
+  name: p_sa_mcd_tcn
+  num_stages: 3
+  output_dim: 1
+  use_channel_attention: true
+  use_stage_head: true
+  use_temporal_attention: true
+  use_temporal_descriptors: true
+train:
+  batch_size: 64
+  checkpoint_metric: rmse
+  checkpoint_min_epoch: 5
+  checkpoint_mode: min
+  device: auto
+  early_stopping_min_delta: 0.0
+  early_stopping_patience: 15
+  epochs: 50
+  grad_clip_norm: 1.0
+  learning_rate: 0.0005
+  stage_loss_weight: 0.0
+  weight_decay: 0.001

@@ -1,0 +1,111 @@
+{
+  "experiment": {
+    "name": "pg_stda_sac_rspa_timecal_deg2_ridge0p01_50e",
+    "seed": 202608,
+    "output_dir": "outputs\\first_transfer_pg_stda_rspa_50e\\pg_stda_sac_rspa_timecal_deg2_ridge0p01_50e"
+  },
+  "data": {
+    "dataset": "xjtu_reaction_wheel_transfer",
+    "source_processed_path": "data/processed/xjtu_sy_hi.npz",
+    "reaction_wheel_csv_path": "data/simulated/reaction_wheel/reaction_wheel_sim.csv",
+    "source_units": [
+      "Bearing1_1",
+      "Bearing1_2",
+      "Bearing1_3",
+      "Bearing1_4",
+      "Bearing1_5",
+      "Bearing2_1",
+      "Bearing2_2",
+      "Bearing2_3",
+      "Bearing2_4",
+      "Bearing2_5",
+      "Bearing3_1",
+      "Bearing3_2",
+      "Bearing3_3",
+      "Bearing3_4",
+      "Bearing3_5"
+    ],
+    "target_train_split": "train",
+    "target_val_split": "val",
+    "target_test_split": "test",
+    "target_hi_feature_columns": [
+      "motor_current",
+      "vibration_proxy"
+    ],
+    "target_hi_window_size": 16,
+    "target_hi_stride": 8,
+    "target_column": "normalized_rul",
+    "target_stage_source": "time_progress",
+    "window_size": 8,
+    "stride": 2,
+    "max_rul": null,
+    "normalize": "zscore",
+    "normalizer_scope": "source_target_train"
+  },
+  "model": {
+    "name": "p_sa_mcd_tcn",
+    "input_channels": 14,
+    "hidden_channels": 32,
+    "kernel_size": 3,
+    "dilations": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "dropout": 0.15,
+    "output_dim": 1,
+    "attention_heads": 4,
+    "use_temporal_attention": true,
+    "use_channel_attention": true,
+    "use_temporal_descriptors": true,
+    "use_stage_head": true,
+    "num_stages": 3
+  },
+  "train": {
+    "epochs": 50,
+    "batch_size": 64,
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "grad_clip_norm": 1.0,
+    "checkpoint_metric": "target_val_rmse",
+    "checkpoint_mode": "min",
+    "device": "auto"
+  },
+  "transfer": {
+    "alignment": "stage",
+    "lmmd_weight": 0.003,
+    "num_stages": 3,
+    "source_supervised_weight": 0.7,
+    "source_stage_aux_weight": 0.01,
+    "target_stage_aux_weight": 0.003,
+    "prototype_alignment_weight": 0.0005,
+    "prototype_min_confidence": 0.5
+  },
+  "metrics": {
+    "alpha": 0.2,
+    "lambdas": [
+      0.5,
+      0.8
+    ]
+  },
+  "conformal": {
+    "enabled": false,
+    "alpha": 0.1
+  },
+  "evaluation": {
+    "calibrate_time_aware": true,
+    "time_aware": {
+      "degree": 2,
+      "ridge": 0.01
+    },
+    "clip_min": 0.0,
+    "clip_max": 1.0,
+    "calibration_source": "target_validation_only",
+    "calibration_features": [
+      "y_pred",
+      "time_index"
+    ],
+    "uncalibrated_output_dir": "outputs\\first_transfer_pg_stda_rspa_50e\\pg_stda_sac_rspa_w0p0005_c0p5_srcsup0p7_50e"
+  }
+}

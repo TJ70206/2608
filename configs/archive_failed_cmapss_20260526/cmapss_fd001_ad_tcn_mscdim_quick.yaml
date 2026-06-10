@@ -1,0 +1,64 @@
+experiment:
+  name: cmapss_fd001_ad_tcn_mscdim_quick
+  seed: 42
+  output_dir: outputs/cmapss_fd001_ad_tcn_mscdim_quick
+
+data:
+  dataset: cmapss
+  root_dir: data/raw/cmapss
+  subset: FD001
+  window_size: 40
+  stride: 1
+  max_rul: 125
+  val_ratio: 0.15
+  normalize: minmax
+  test_pad_short: true
+  drop_features:
+    - setting_1
+    - setting_2
+    - setting_3
+    - s_1
+    - s_5
+    - s_6
+    - s_10
+    - s_16
+    - s_18
+    - s_19
+
+model:
+  name: ad_tcn_mscdim
+  input_channels: 14
+  hidden_channels: 32
+  kernel_size: 3
+  dilations: [1, 2, 4, 8, 16, 30]
+  dropout: 0.1
+  output_dim: 1
+  num_ad_blocks: 2
+  mscdim_kernel_sizes: [1, 3, 5]
+  use_weight_norm: true
+  use_stage_head: false
+
+train:
+  epochs: 30
+  batch_size: 256
+  optimizer: adam
+  loss: smooth_l1
+  learning_rate: 0.001
+  weight_decay: 0.0
+  grad_clip_norm: 1.0
+  stage_loss_weight: 0.0
+  late_stage_weight: 1.0
+  late_prediction_weight: 1.0
+  checkpoint_metric: rmse
+  checkpoint_mode: min
+  early_stopping_patience: 30
+  early_stopping_min_delta: 0.0
+  device: auto
+
+metrics:
+  alpha: 0.2
+  lambdas: [0.5, 0.8]
+
+conformal:
+  enabled: true
+  alpha: 0.1

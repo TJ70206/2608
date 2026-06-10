@@ -1,0 +1,73 @@
+experiment:
+  name: cmapss_fd001_compare_transformer_80e_raw
+  seed: 42
+  output_dir: outputs/cmapss_fd001_compare_transformer_80e_raw
+
+data:
+  dataset: cmapss
+  root_dir: data/raw/cmapss
+  subset: FD001
+  window_size: 40
+  stride: 1
+  max_rul: 125
+  test_max_rul: null
+  val_ratio: 0.15
+  normalize: minmax
+  val_random_end_trim: true
+  val_trim_min: 1
+  val_trim_max: 160
+  val_num_trims: 5
+  val_pad_short: true
+  test_pad_short: true
+  drop_features:
+    - setting_1
+    - setting_2
+    - setting_3
+    - s_1
+    - s_5
+    - s_6
+    - s_10
+    - s_16
+    - s_18
+    - s_19
+
+model:
+  name: transformer
+  input_channels: 14
+  d_model: 96
+  num_heads: 4
+  num_layers: 2
+  dim_feedforward: 256
+  dropout: 0.1
+  output_dim: 1
+  max_len: 128
+  pooling: last
+  head_hidden_dims: [64]
+
+train:
+  epochs: 80
+  batch_size: 256
+  optimizer: adam
+  loss: smooth_l1
+  learning_rate: 0.0005
+  weight_decay: 0.0
+  grad_clip_norm: 1.0
+  late_stage_weight: 1.0
+  late_prediction_weight: 1.25
+  checkpoint_metric: weighted
+  checkpoint_metric_weights:
+    rmse: 0.25
+    last_window_rmse: 0.75
+  checkpoint_mode: min
+  checkpoint_min_epoch: 10
+  early_stopping_patience: 20
+  early_stopping_min_delta: 0.0
+  device: auto
+
+metrics:
+  alpha: 0.2
+  lambdas: [0.5, 0.8]
+
+conformal:
+  enabled: true
+  alpha: 0.1

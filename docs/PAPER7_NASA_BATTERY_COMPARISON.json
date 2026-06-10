@@ -1,0 +1,175 @@
+{
+  "paper": "Lithium-ion battery RUL prediction based on optimized VMD-SSA-PatchTST algorithm",
+  "paper_table4": [
+    {
+      "model": "SSA-CNN",
+      "validation": "B0006",
+      "mae": 0.0732,
+      "rmse": 0.104,
+      "mape_percent": 5.11
+    },
+    {
+      "model": "SSA-CNN",
+      "validation": "B0007",
+      "mae": 0.0384,
+      "rmse": 0.049,
+      "mape_percent": 2.36
+    },
+    {
+      "model": "SSA-CNN",
+      "validation": "B0018",
+      "mae": 0.0472,
+      "rmse": 0.0626,
+      "mape_percent": 3.04
+    },
+    {
+      "model": "SSA-GRU",
+      "validation": "B0006",
+      "mae": 0.0397,
+      "rmse": 0.0472,
+      "mape_percent": 2.188
+    },
+    {
+      "model": "SSA-GRU",
+      "validation": "B0007",
+      "mae": 0.0411,
+      "rmse": 0.049,
+      "mape_percent": 2.251
+    },
+    {
+      "model": "SSA-GRU",
+      "validation": "B0018",
+      "mae": 0.0783,
+      "rmse": 0.09,
+      "mape_percent": 4.296
+    },
+    {
+      "model": "SSA-PatchTST",
+      "validation": "B0006",
+      "mae": 0.0183,
+      "rmse": 0.0234,
+      "mape_percent": 1.289
+    },
+    {
+      "model": "SSA-PatchTST",
+      "validation": "B0007",
+      "mae": 0.035,
+      "rmse": 0.0424,
+      "mape_percent": 2.32
+    },
+    {
+      "model": "SSA-PatchTST",
+      "validation": "B0018",
+      "mae": 0.0371,
+      "rmse": 0.0449,
+      "mape_percent": 2.419
+    },
+    {
+      "model": "WOA-VMD-SSA-PatchTST",
+      "validation": "B0006",
+      "mae": 0.015,
+      "rmse": 0.0218,
+      "mape_percent": 0.95
+    },
+    {
+      "model": "WOA-VMD-SSA-PatchTST",
+      "validation": "B0007",
+      "mae": 0.0163,
+      "rmse": 0.0226,
+      "mape_percent": 1.024
+    },
+    {
+      "model": "WOA-VMD-SSA-PatchTST",
+      "validation": "B0018",
+      "mae": 0.0306,
+      "rmse": 0.0373,
+      "mape_percent": 1.891
+    }
+  ],
+  "ours": [
+    {
+      "model": "P-SA-MCD-TCN paper-like w5",
+      "validation": "B0006",
+      "test": "B0005",
+      "epochs_ran": 41,
+      "mae": 0.03861209506508689,
+      "rmse": 0.04369603735852182,
+      "mape_percent": 2.4966239183142993,
+      "last_window_rmse": 0.03679943084716797,
+      "conformal_coverage": 1.0,
+      "conformal_avg_width": 0.29073190689086914,
+      "note": "timestep=5, horizon=5",
+      "run": "nasa_battery_paper7_capacity_psa_mcd_tcn"
+    },
+    {
+      "model": "P-SA-MCD-TCN w48",
+      "validation": "B0006",
+      "test": "B0005",
+      "epochs_ran": 44,
+      "mae": 0.023335414713826674,
+      "rmse": 0.02749586919053602,
+      "mape_percent": 1.5679060914771736,
+      "last_window_rmse": 0.015634655952453613,
+      "conformal_coverage": 1.0,
+      "conformal_avg_width": 0.3413553237915039,
+      "note": "window=48, horizon=5; best RMSE among our runs",
+      "run": "nasa_battery_paper7_capacity_psa_mcd_tcn_w48"
+    },
+    {
+      "model": "P-SA-MCD-TCN w64",
+      "validation": "B0006",
+      "test": "B0005",
+      "epochs_ran": 50,
+      "mae": 0.021645991802215575,
+      "rmse": 0.028604307356121347,
+      "mape_percent": 1.4725564181844593,
+      "last_window_rmse": 0.008690118789672852,
+      "conformal_coverage": 1.0,
+      "conformal_avg_width": 0.3497459888458252,
+      "note": "window=64, horizon=5; best MAE/MAPE among our tuning runs",
+      "run": "nasa_battery_paper7_capacity_psa_mcd_tcn_w64"
+    },
+    {
+      "model": "P-SA-MCD-TCN h96-w48",
+      "validation": "B0006",
+      "test": "B0005",
+      "epochs_ran": 84,
+      "mae": 0.03917340369060122,
+      "rmse": 0.04593638028561243,
+      "mape_percent": 2.66886359803682,
+      "last_window_rmse": 0.050432801246643066,
+      "conformal_coverage": 1.0,
+      "conformal_avg_width": 0.35060906410217285,
+      "note": "larger hidden channels; rejected",
+      "run": "nasa_battery_paper7_capacity_psa_mcd_tcn_h96_w48"
+    },
+    {
+      "model": "P-SA-MCD-TCN w48-lr5e4",
+      "validation": "B0006",
+      "test": "B0005",
+      "epochs_ran": 64,
+      "mae": 0.02955953519919823,
+      "rmse": 0.039799726925201125,
+      "mape_percent": 2.116216137726034,
+      "last_window_rmse": 0.07404065132141113,
+      "conformal_coverage": 1.0,
+      "conformal_avg_width": 0.4563477039337158,
+      "note": "smaller learning rate; rejected",
+      "run": "nasa_battery_paper7_capacity_psa_mcd_tcn_w48_lr5e4"
+    },
+    {
+      "model": "P-SA-MCD-TCN w64-1000e",
+      "validation": "B0006",
+      "test": "B0005",
+      "epochs_ran": 1000,
+      "mae": 0.04340044260025024,
+      "rmse": 0.05097863968253298,
+      "mape_percent": 3.1580016966367537,
+      "last_window_rmse": 0.042798519134521484,
+      "conformal_coverage": 1.0,
+      "conformal_avg_width": 0.20560646057128906,
+      "note": "1000 epochs from w64; rejected due to worse test generalization",
+      "run": "nasa_battery_paper7_capacity_psa_mcd_tcn_w64_1000e"
+    }
+  ]
+}

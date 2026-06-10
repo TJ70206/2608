@@ -1,0 +1,84 @@
+experiment:
+  name: nasa_to_satellite_battery_pg_stda_psa_mcd_proxy_compact_mono_low_sac_s0p01_t0p003_w0p003_50e
+  seed: 202608
+  output_dir: outputs/second_transfer_pg_stda_sac_50e/psa_mcd_proxy_compact_mono_low_sac_s0p01_t0p003_w0p003_50e
+
+data:
+  dataset: nasa_to_satellite_battery
+  source_csv_path: data/processed/nasa_battery.csv
+  target_csv_path: data/simulated/satellite_battery/satellite_battery_sim.csv
+  battery_proxy_feature_set: pg_stda_v1
+  source_feature_columns:
+    - voltage
+    - current
+    - temperature
+    - d_voltage
+    - d_temperature
+    - abs_current
+  target_feature_columns:
+    - voltage
+    - current
+    - temperature
+    - d_voltage
+    - d_temperature
+    - abs_current
+  target_feature_protocol: telemetry_only
+  source_current_multiplier: -1.0
+  source_target_column: normalized_rul
+  target_column: normalized_rul
+  target_stage_source: time_progress
+  target_train_split: train
+  target_val_split: val
+  target_test_split: test
+  window_size: 32
+  source_window_size: 32
+  target_window_size: 32
+  source_stride: 1
+  target_stride: 96
+  max_rul: null
+  normalize: zscore
+  normalizer_scope: source_target_train
+
+model:
+  name: p_sa_mcd_tcn
+  input_channels: 6
+  hidden_channels: 32
+  kernel_size: 3
+  dilations: [1, 2, 4, 8]
+  dropout: 0.15
+  output_dim: 1
+  attention_heads: 4
+  use_temporal_attention: true
+  use_channel_attention: true
+  use_temporal_descriptors: true
+  use_stage_head: true
+  num_stages: 3
+
+train:
+  epochs: 50
+  batch_size: 64
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  grad_clip_norm: 1.0
+  checkpoint_metric: target_val_rmse
+  checkpoint_mode: min
+  device: auto
+
+transfer:
+  alignment: stage
+  lmmd_weight: 0.003
+  lmmd_warmup_epochs: 10
+  num_stages: 3
+  target_sequence_monotonic_weight: 0.001
+  target_sequence_smooth_weight: 0.0003
+  target_sequence_monotonic_margin: 0.0
+  source_stage_aux_weight: 0.01
+  target_stage_aux_weight: 0.003
+
+metrics:
+  alpha: 0.2
+  lambdas: [0.5, 0.8]
+
+conformal:
+  enabled: false
+  alpha: 0.1

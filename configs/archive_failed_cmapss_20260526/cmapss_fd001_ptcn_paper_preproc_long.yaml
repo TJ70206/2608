@@ -1,0 +1,52 @@
+experiment:
+  name: cmapss_fd001_ptcn_paper_preproc_long
+  seed: 42
+  output_dir: outputs/cmapss_fd001_ptcn_paper_preproc_long
+
+data:
+  dataset: cmapss
+  root_dir: data/raw/cmapss
+  subset: FD001
+  training_mode: full_sequence_random_trim
+  window_size: 30
+  min_length: 30
+  random_end_trim: true
+  trim_min: 10
+  trim_max: 75
+  max_rul: 125
+  val_ratio: 0.15
+  normalize: zscore
+  drop_features: []
+
+model:
+  name: p_tcn
+  input_channels: 24
+  hidden_channels: 200
+  kernel_size: 3
+  dilations: [1, 2, 4, 8, 16]
+  dropout: 0.3
+  output_dim: 1
+  use_batch_norm: true
+  head_hidden_dims: [200, 100, 50, 25]
+
+train:
+  epochs: 1000
+  batch_size: 8
+  optimizer: adam
+  loss: mse
+  learning_rate: 0.01
+  weight_decay: 0.0
+  grad_clip_norm: 0.0
+  checkpoint_metric: rmse
+  checkpoint_mode: min
+  early_stopping_patience: 40
+  early_stopping_min_delta: 0.0
+  device: auto
+
+metrics:
+  alpha: 0.2
+  lambdas: [0.5, 0.8]
+
+conformal:
+  enabled: true
+  alpha: 0.1

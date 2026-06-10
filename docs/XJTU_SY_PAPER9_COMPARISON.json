@@ -1,0 +1,373 @@
+{
+  "paper": "Remaining Useful Life Prediction Across Conditions Based on a Health Indicator-Weighted Subdomain Alignment Network",
+  "paper_file": "????/9.md",
+  "dataset": "XJTU-SY Bearing",
+  "local_processed_stats": {
+    "processed_path": "data/processed/xjtu_sy_hi.npz",
+    "feature_dim": 14,
+    "features": [
+      "rms_h",
+      "rms_v",
+      "std_h",
+      "std_v",
+      "skewness_h",
+      "skewness_v",
+      "kurtosis_h",
+      "kurtosis_v",
+      "peak_to_peak_h",
+      "peak_to_peak_v",
+      "crest_factor_h",
+      "crest_factor_v",
+      "trend_slope_h",
+      "trend_slope_v"
+    ],
+    "units": [
+      {
+        "unit_id": "Bearing1_1",
+        "condition": "C1 / 35Hz12kN",
+        "length": 123
+      },
+      {
+        "unit_id": "Bearing1_2",
+        "condition": "C1 / 35Hz12kN",
+        "length": 161
+      },
+      {
+        "unit_id": "Bearing1_3",
+        "condition": "C1 / 35Hz12kN",
+        "length": 158
+      },
+      {
+        "unit_id": "Bearing1_4",
+        "condition": "C1 / 35Hz12kN",
+        "length": 122
+      },
+      {
+        "unit_id": "Bearing1_5",
+        "condition": "C1 / 35Hz12kN",
+        "length": 52
+      },
+      {
+        "unit_id": "Bearing2_1",
+        "condition": "C2 / 37.5Hz11kN",
+        "length": 491
+      },
+      {
+        "unit_id": "Bearing2_2",
+        "condition": "C2 / 37.5Hz11kN",
+        "length": 161
+      },
+      {
+        "unit_id": "Bearing2_3",
+        "condition": "C2 / 37.5Hz11kN",
+        "length": 533
+      },
+      {
+        "unit_id": "Bearing2_4",
+        "condition": "C2 / 37.5Hz11kN",
+        "length": 42
+      },
+      {
+        "unit_id": "Bearing2_5",
+        "condition": "C2 / 37.5Hz11kN",
+        "length": 339
+      },
+      {
+        "unit_id": "Bearing3_1",
+        "condition": "C3 / 40Hz10kN",
+        "length": 2538
+      },
+      {
+        "unit_id": "Bearing3_2",
+        "condition": "C3 / 40Hz10kN",
+        "length": 2496
+      },
+      {
+        "unit_id": "Bearing3_3",
+        "condition": "C3 / 40Hz10kN",
+        "length": 371
+      },
+      {
+        "unit_id": "Bearing3_4",
+        "condition": "C3 / 40Hz10kN",
+        "length": 1515
+      },
+      {
+        "unit_id": "Bearing3_5",
+        "condition": "C3 / 40Hz10kN",
+        "length": 114
+      }
+    ]
+  },
+  "paper_protocol": {
+    "conditions": {
+      "C1": {
+        "local_folder": "35Hz12kN",
+        "load_N": 12000,
+        "speed_rpm": 2100,
+        "bearings": "B1_1~B1_5"
+      },
+      "C2": {
+        "local_folder": "37.5Hz11kN",
+        "load_N": 11000,
+        "speed_rpm": 2250,
+        "bearings": "B2_1~B2_5"
+      },
+      "C3": {
+        "local_folder": "40Hz10kN",
+        "load_N": 10000,
+        "speed_rpm": 2400,
+        "bearings": "B3_1~B3_5"
+      }
+    },
+    "metrics": [
+      "MAE",
+      "RMSE",
+      "Score"
+    ],
+    "note": "Paper reports normalized RUL errors over 10 repeated runs. Higher Score is better in the paper definition."
+  },
+  "paper_tasks": [
+    {
+      "task": "B1",
+      "conditions": "C1 -> C2",
+      "labeled_source": "B1_1",
+      "unlabeled_target": "B2_1",
+      "test": "B2_3"
+    },
+    {
+      "task": "B2",
+      "conditions": "C1 -> C3",
+      "labeled_source": "B1_1",
+      "unlabeled_target": "B3_3",
+      "test": "B3_1"
+    },
+    {
+      "task": "B3",
+      "conditions": "C2 -> C1",
+      "labeled_source": "B2_1",
+      "unlabeled_target": "B1_3",
+      "test": "B1_1"
+    },
+    {
+      "task": "B4",
+      "conditions": "C2 -> C3",
+      "labeled_source": "B2_1",
+      "unlabeled_target": "B3_3",
+      "test": "B3_1"
+    },
+    {
+      "task": "B5",
+      "conditions": "C3 -> C1",
+      "labeled_source": "B3_1",
+      "unlabeled_target": "B1_3",
+      "test": "B1_1"
+    },
+    {
+      "task": "B6",
+      "conditions": "C3 -> C2",
+      "labeled_source": "B3_1",
+      "unlabeled_target": "B2_3",
+      "test": "B2_1"
+    }
+  ],
+  "paper_table14_results": [
+    {
+      "task": "B1",
+      "model": "DSAN-WM",
+      "mae_mean": 0.1763,
+      "mae_std": 0.0109,
+      "rmse_mean": 0.2211,
+      "rmse_std": 0.0236,
+      "score_mean": 0.329,
+      "score_std": 0.0294
+    },
+    {
+      "task": "B1",
+      "model": "GSAN",
+      "mae_mean": 0.1595,
+      "mae_std": 0.0251,
+      "rmse_mean": 0.2012,
+      "rmse_std": 0.0359,
+      "score_mean": 0.3498,
+      "score_std": 0.0325
+    },
+    {
+      "task": "B1",
+      "model": "HIWSAN",
+      "mae_mean": 0.1382,
+      "mae_std": 0.0161,
+      "rmse_mean": 0.1725,
+      "rmse_std": 0.0255,
+      "score_mean": 0.3887,
+      "score_std": 0.0364
+    },
+    {
+      "task": "B2",
+      "model": "DSAN-WM",
+      "mae_mean": 0.1517,
+      "mae_std": 0.0178,
+      "rmse_mean": 0.2084,
+      "rmse_std": 0.0459,
+      "score_mean": 0.3735,
+      "score_std": 0.0257
+    },
+    {
+      "task": "B2",
+      "model": "GSAN",
+      "mae_mean": 0.1289,
+      "mae_std": 0.0249,
+      "rmse_mean": 0.1623,
+      "rmse_std": 0.046,
+      "score_mean": 0.3831,
+      "score_std": 0.0495
+    },
+    {
+      "task": "B2",
+      "model": "HIWSAN",
+      "mae_mean": 0.0863,
+      "mae_std": 0.0117,
+      "rmse_mean": 0.1017,
+      "rmse_std": 0.0332,
+      "score_mean": 0.4821,
+      "score_std": 0.031
+    },
+    {
+      "task": "B3",
+      "model": "DSAN-WM",
+      "mae_mean": 0.2102,
+      "mae_std": 0.0383,
+      "rmse_mean": 0.293,
+      "rmse_std": 0.0642,
+      "score_mean": 0.3317,
+      "score_std": 0.0306
+    },
+    {
+      "task": "B3",
+      "model": "GSAN",
+      "mae_mean": 0.1704,
+      "mae_std": 0.0563,
+      "rmse_mean": 0.2297,
+      "rmse_std": 0.0419,
+      "score_mean": 0.3442,
+      "score_std": 0.0605
+    },
+    {
+      "task": "B3",
+      "model": "HIWSAN",
+      "mae_mean": 0.109,
+      "mae_std": 0.0143,
+      "rmse_mean": 0.1327,
+      "rmse_std": 0.0225,
+      "score_mean": 0.444,
+      "score_std": 0.0331
+    },
+    {
+      "task": "B4",
+      "model": "DSAN-WM",
+      "mae_mean": 0.1804,
+      "mae_std": 0.0493,
+      "rmse_mean": 0.2291,
+      "rmse_std": 0.0645,
+      "score_mean": 0.3308,
+      "score_std": 0.0801
+    },
+    {
+      "task": "B4",
+      "model": "GSAN",
+      "mae_mean": 0.1608,
+      "mae_std": 0.0151,
+      "rmse_mean": 0.2096,
+      "rmse_std": 0.0285,
+      "score_mean": 0.3517,
+      "score_std": 0.0327
+    },
+    {
+      "task": "B4",
+      "model": "HIWSAN",
+      "mae_mean": 0.1377,
+      "mae_std": 0.0213,
+      "rmse_mean": 0.1703,
+      "rmse_std": 0.0249,
+      "score_mean": 0.3863,
+      "score_std": 0.0451
+    },
+    {
+      "task": "B5",
+      "model": "DSAN-WM",
+      "mae_mean": 0.1927,
+      "mae_std": 0.0521,
+      "rmse_mean": 0.2609,
+      "rmse_std": 0.0564,
+      "score_mean": 0.3501,
+      "score_std": 0.0487
+    },
+    {
+      "task": "B5",
+      "model": "GSAN",
+      "mae_mean": 0.1623,
+      "mae_std": 0.0407,
+      "rmse_mean": 0.2107,
+      "rmse_std": 0.0373,
+      "score_mean": 0.3749,
+      "score_std": 0.0602
+    },
+    {
+      "task": "B5",
+      "model": "HIWSAN",
+      "mae_mean": 0.1114,
+      "mae_std": 0.0155,
+      "rmse_mean": 0.132,
+      "rmse_std": 0.0264,
+      "score_mean": 0.4295,
+      "score_std": 0.0362
+    },
+    {
+      "task": "B6",
+      "model": "DSAN-WM",
+      "mae_mean": 0.1812,
+      "mae_std": 0.019,
+      "rmse_mean": 0.232,
+      "rmse_std": 0.0804,
+      "score_mean": 0.3252,
+      "score_std": 0.0303
+    },
+    {
+      "task": "B6",
+      "model": "GSAN",
+      "mae_mean": 0.1597,
+      "mae_std": 0.0296,
+      "rmse_mean": 0.2002,
+      "rmse_std": 0.0443,
+      "score_mean": 0.355,
+      "score_std": 0.039
+    },
+    {
+      "task": "B6",
+      "model": "HIWSAN",
+      "mae_mean": 0.1311,
+      "mae_std": 0.023,
+      "rmse_mean": 0.1586,
+      "rmse_std": 0.0313,
+      "score_mean": 0.3927,
+      "score_std": 0.0478
+    }
+  ],
+  "paper_table14_average_by_model": {
+    "DSAN-WM": {
+      "avg_mae": 0.18208333333333335,
+      "avg_rmse": 0.24075,
+      "avg_score": 0.34005
+    },
+    "GSAN": {
+      "avg_mae": 0.15693333333333334,
+      "avg_rmse": 0.20228333333333334,
+      "avg_score": 0.3597833333333333
+    },
+    "HIWSAN": {
+      "avg_mae": 0.11895,
+      "avg_rmse": 0.14463333333333334,
+      "avg_score": 0.42055
+    }
+  }
+}
